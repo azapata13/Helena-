@@ -1,0 +1,51 @@
+import { pickRoundItems, shuffle } from './random'
+
+const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('')
+
+export function makeWordRounds(words: string[], rounds = words.length, seed: string): string[] {
+  return pickRoundItems(words, rounds, seed)
+}
+
+export function makeLetterChoices(word: string, seed: string): { display: string; answer: string; choices: string[] } {
+  const letters = word.toLowerCase().split('')
+  const hiddenIndex = Math.max(0, letters.length - 1)
+  const answer = letters[hiddenIndex]
+  const distractors = alphabet.filter((letter) => letter !== answer && !letters.includes(letter))
+  const choices = shuffle([answer, ...shuffle(distractors, `${seed}-d`).slice(0, 3)], seed)
+  const display = letters.map((letter, index) => (index === hiddenIndex ? '_' : letter.toUpperCase())).join(' ')
+  return { display, answer, choices }
+}
+
+export function makeWordChoices(answer: string, allWords: string[], seed: string, count = 4): string[] {
+  const pool = allWords.filter((word) => word !== answer)
+  return shuffle([answer, ...shuffle(pool, `${seed}-pool`).slice(0, count - 1)], seed)
+}
+
+export function makeNumberSequence(min: number, max: number, steps: number[], seed: string) {
+  const step = steps[Math.abs(seed.length + seed.charCodeAt(0)) % steps.length]
+  const startMax = max - step * 3
+  const start = min + (Math.abs(hashString(seed)) % Math.max(1, startMax - min + 1))
+  const sequence = [start, start + step, start + step * 2, start + step * 3]
+  const missingIndex = 2
+  const answer = sequence[missingIndex]
+  const rawChoices = [answer, answer + step, Math.max(min, answer - step), Math.min(max, answer + step * 2)]
+  const choices = shuffle(
+    rawChoices.filter((value, index, self) => value <= max && self.indexOf(value) === index),
+    seed,
+  )
+  return { sequence, missingIndex, answer, choices, step }
+}
+
+export function makeNumberChoices(answer: number, min: number, max: number, seed: string): number[] {
+  const offsets = [-10, -5, -2, 2, 5, 10]
+  const pool = offsets.map((offset) => answer + offset).filter((value) => value >= min && value <= max && value !== answer)
+  return shuffle([answer, ...shuffle(pool, `${seed}-n`).slice(0, 3)], seed)
+}
+
+export function numberToFrench(value: number): string {
+  return new Intl.NumberFormat('fr-CA').format(value)
+}
+
+function hashString(value: string): number {
+  return value.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0)
+}

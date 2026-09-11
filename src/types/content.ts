@@ -1,0 +1,98 @@
+export type Subject = 'lecture' | 'mots' | 'ecriture' | 'maths' | 'grammaire'
+
+export type ActivityType =
+  | 'missingLetters'
+  | 'listenChoose'
+  | 'buildWord'
+  | 'findWord'
+  | 'miniDictee'
+  | 'alphabeticalOrder'
+  | 'nounSort'
+  | 'numberSequence'
+  | 'numberDictation'
+  | 'reading'
+  | 'writing'
+
+export type BaseActivity = {
+  id: string
+  type: ActivityType
+  subject: Subject
+  title: string
+  instruction?: string
+  required?: boolean
+  stars?: number
+}
+
+export type WordActivity = BaseActivity & {
+  type: 'missingLetters' | 'listenChoose' | 'buildWord' | 'findWord' | 'miniDictee'
+  words: string[]
+  rounds?: number
+}
+
+export type AlphabeticalOrderActivity = BaseActivity & {
+  type: 'alphabeticalOrder'
+  sets: string[][]
+}
+
+export type NounSortActivity = BaseActivity & {
+  type: 'nounSort'
+  items: Array<{
+    text: string
+    answer: 'proper' | 'common'
+    hint: 'endroit' | 'personne' | 'animal' | 'objet'
+  }>
+  rounds?: number
+}
+
+export type NumberSequenceActivity = BaseActivity & {
+  type: 'numberSequence'
+  min: number
+  max: number
+  steps: number[]
+  rounds?: number
+}
+
+export type NumberDictationActivity = BaseActivity & {
+  type: 'numberDictation'
+  min: number
+  max: number
+  numbers?: number[]
+  rounds?: number
+}
+
+export type ReadingActivity = BaseActivity & {
+  type: 'reading'
+  prompt: string
+}
+
+export type WritingActivity = BaseActivity & {
+  type: 'writing'
+  prompt: string
+  checklist: string[]
+}
+
+export type Activity =
+  | WordActivity
+  | AlphabeticalOrderActivity
+  | NounSortActivity
+  | NumberSequenceActivity
+  | NumberDictationActivity
+  | ReadingActivity
+  | WritingActivity
+
+export type WeekContent = {
+  id: string
+  title: string
+  startDate: string
+  endDate: string
+  status?: 'past' | 'current' | 'future'
+  summary: {
+    reading?: string
+    vocabulary?: string
+    writing?: string
+    math?: string
+    grammar?: string
+  }
+  vocabulary?: string[]
+  activities: Activity[]
+}
