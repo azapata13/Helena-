@@ -8,6 +8,7 @@ import type {
   NumberSequenceActivity,
   ReadingActivity,
   WeekContent,
+  WordPreviewActivity,
   WritingActivity,
 } from '../types/content'
 import { makeNumberChoices, makeNumberSequence, numberToFrench } from '../utils/games'
@@ -157,6 +158,22 @@ export function ReadingActivityView({ week, activity, onBack, onComplete }: Comm
       <div className="quiet-illustration" aria-hidden="true">📖</div>
       <h1 className="big-question">{activity.prompt}</h1>
       <button className="primary-button next-button" type="button" onClick={onComplete}>J’ai terminé</button>
+    </ActivityShell>
+  )
+}
+
+export function WordPreviewActivityView({ week, activity, onBack, onComplete }: CommonProps<WordPreviewActivity>) {
+  const words = activity.words.length > 0 ? activity.words : week.vocabulary ?? []
+
+  return (
+    <ActivityShell week={week} activity={activity} isComplete={false} onBack={onBack} onNext={onComplete}>
+      <p className="word-preview-prompt">{activity.prompt ?? 'Lis les mots à voix haute doucement.'}</p>
+      <div className="word-preview-grid" aria-label="Mots de vocabulaire à lire">
+        {words.map((word) => (
+          <span key={word}>{word}</span>
+        ))}
+      </div>
+      <button className="primary-button next-button" type="button" onClick={onComplete}>J’ai lu les mots</button>
     </ActivityShell>
   )
 }

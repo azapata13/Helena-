@@ -6,6 +6,7 @@ import {
   NumberDictationActivityView,
   NumberSequenceActivityView,
   ReadingActivityView,
+  WordPreviewActivityView,
   WritingActivityView,
 } from './OtherActivities'
 
@@ -35,6 +36,8 @@ export function ActivityRenderer(props: Props) {
       return <NumberDictationActivityView {...props} activity={activity} />
     case 'reading':
       return <ReadingActivityView {...props} activity={activity} />
+    case 'wordPreview':
+      return <WordPreviewActivityView {...props} activity={activity} />
     case 'writing':
       return <WritingActivityView {...props} activity={activity} />
   }

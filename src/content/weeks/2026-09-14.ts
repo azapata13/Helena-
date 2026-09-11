@@ -24,6 +24,15 @@ export const week20260914: WeekContent = {
       stars: 2,
     },
     {
+      id: 'lecture-mots-semaine',
+      type: 'wordPreview',
+      subject: 'mots',
+      title: 'Je lis mes mots',
+      prompt: 'Lis chaque mot une fois avant de commencer les jeux.',
+      words: ['bas', 'basse', 'fort', 'forte', 'haut', 'haute', 'laid', 'laide', 'petit', 'petite'],
+      stars: 1,
+    },
+    {
       id: 'crochet-lettre-cachee',
       type: 'missingLetters',
       subject: 'mots',

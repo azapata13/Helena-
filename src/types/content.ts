@@ -11,6 +11,7 @@ export type ActivityType =
   | 'numberSequence'
   | 'numberDictation'
   | 'reading'
+  | 'wordPreview'
   | 'writing'
 
 export type BaseActivity = {
@@ -65,6 +66,12 @@ export type ReadingActivity = BaseActivity & {
   prompt: string
 }
 
+export type WordPreviewActivity = BaseActivity & {
+  type: 'wordPreview'
+  words: string[]
+  prompt?: string
+}
+
 export type WritingActivity = BaseActivity & {
   type: 'writing'
   prompt: string
@@ -78,6 +85,7 @@ export type Activity =
   | NumberSequenceActivity
   | NumberDictationActivity
   | ReadingActivity
+  | WordPreviewActivity
   | WritingActivity
 
 export type WeekContent = {

@@ -17,5 +17,14 @@ export const weekTemplate: WeekContent = {
       prompt: 'Lis ton livre.',
       stars: 2,
     },
+    {
+      id: 'lecture-mots',
+      type: 'wordPreview',
+      subject: 'mots',
+      title: 'Je lis mes mots',
+      prompt: 'Lis chaque mot une fois avant de commencer les jeux.',
+      words: [],
+      stars: 1,
+    },
   ],
 }

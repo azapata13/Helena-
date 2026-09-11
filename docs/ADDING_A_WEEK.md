@@ -13,6 +13,7 @@ Les semaines vivent dans `src/content/weeks/`. Pour ajouter une semaine, copiez 
 ## Types d’activités
 
 - `reading`: lecture faite hors ligne avec bouton “J’ai terminé”.
+- `wordPreview`: gros mots de vocabulaire à lire avant les jeux.
 - `writing`: écriture dans le cahier avec une liste de vérification.
 - `missingLetters`: Helena choisit une lettre manquante.
 - `listenChoose`: elle écoute un mot et choisit la bonne réponse.
