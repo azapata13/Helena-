@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { AudioButton } from '../components/AudioButton'
+import { speak } from '../services/voice'
 import type {
   Activity,
   AlphabeticalOrderActivity,
@@ -170,7 +171,10 @@ export function WordPreviewActivityView({ week, activity, onBack, onComplete }: 
       <p className="word-preview-prompt">{activity.prompt ?? 'Lis les mots à voix haute doucement.'}</p>
       <div className="word-preview-grid" aria-label="Mots de vocabulaire à lire">
         {words.map((word) => (
-          <span key={word}>{word}</span>
+          <button type="button" key={word} onClick={() => speak(word)} aria-label={`Écouter ${word}`}>
+            <span>{word}</span>
+            <small aria-hidden="true">🔊</small>
+          </button>
         ))}
       </div>
       <button className="primary-button next-button" type="button" onClick={onComplete}>J’ai lu les mots</button>
