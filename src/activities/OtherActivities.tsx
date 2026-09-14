@@ -46,6 +46,20 @@ export function AlphabeticalActivityView({ week, activity, mode, onBack, onAnswe
       const isCorrect = next.every((item, index) => item === answer[index])
       const nextCorrectAnswers = correctAnswers + (isCorrect ? 1 : 0)
       setCorrectAnswers(nextCorrectAnswers)
+      if (mode === 'test' && roundIndex < activity.sets.length - 1) {
+        onAnswer({
+          activityId: activity.id,
+          questionId: `${activity.id}-${roundIndex + 1}`,
+          isCorrect,
+          answer: next.join(', '),
+          expectedAnswer: answer.join(', '),
+        })
+        setRoundIndex((current) => current + 1)
+        setSelected([])
+        setFeedback('')
+        setFeedbackText('')
+        return
+      }
       setFeedback(isCorrect ? 'success' : 'try')
       if (mode === 'test' && roundIndex >= activity.sets.length - 1) {
         setFeedbackText(`Bloc terminé : ${nextCorrectAnswers}/${activity.sets.length}.`)
@@ -101,12 +115,6 @@ export function NounSortActivityView({ week, activity, mode, onBack, onAnswer, o
     const isCorrect = item.answer === answer
     const nextCorrectAnswers = correctAnswers + (isCorrect ? 1 : 0)
     setCorrectAnswers(nextCorrectAnswers)
-    setFeedback(isCorrect ? 'success' : 'try')
-    if (mode === 'test' && roundIndex >= rounds.length - 1) {
-      setFeedbackText(`Bloc terminé : ${nextCorrectAnswers}/${rounds.length}.`)
-    } else {
-      setFeedbackText(isCorrect ? 'Oui !' : mode === 'test' ? 'Réponse enregistrée.' : 'Regarde l’indice et essaie encore')
-    }
     onAnswer({
       activityId: activity.id,
       questionId: `${activity.id}-${roundIndex + 1}`,
@@ -114,6 +122,18 @@ export function NounSortActivityView({ week, activity, mode, onBack, onAnswer, o
       answer,
       expectedAnswer: item.answer,
     })
+    if (mode === 'test' && roundIndex < rounds.length - 1) {
+      setRoundIndex((current) => current + 1)
+      setFeedback('')
+      setFeedbackText('')
+      return
+    }
+    setFeedback(isCorrect ? 'success' : 'try')
+    if (mode === 'test' && roundIndex >= rounds.length - 1) {
+      setFeedbackText(`Bloc terminé : ${nextCorrectAnswers}/${rounds.length}.`)
+    } else {
+      setFeedbackText(isCorrect ? 'Oui !' : mode === 'test' ? 'Réponse enregistrée.' : 'Regarde l’indice et essaie encore')
+    }
   }
 
   function next() {
@@ -151,12 +171,6 @@ export function NumberSequenceActivityView({ week, activity, mode, onBack, onAns
     const isCorrect = choice === puzzle.answer
     const nextCorrectAnswers = correctAnswers + (isCorrect ? 1 : 0)
     setCorrectAnswers(nextCorrectAnswers)
-    setFeedback(isCorrect ? 'success' : 'try')
-    if (mode === 'test' && roundIndex >= rounds - 1) {
-      setFeedbackText(`Bloc terminé : ${nextCorrectAnswers}/${rounds}.`)
-    } else {
-      setFeedbackText(isCorrect ? 'Exactement !' : mode === 'test' ? 'Réponse enregistrée.' : 'Essaie encore')
-    }
     onAnswer({
       activityId: activity.id,
       questionId: `${activity.id}-${roundIndex + 1}`,
@@ -164,6 +178,18 @@ export function NumberSequenceActivityView({ week, activity, mode, onBack, onAns
       answer: String(choice),
       expectedAnswer: String(puzzle.answer),
     })
+    if (mode === 'test' && roundIndex < rounds - 1) {
+      setRoundIndex((current) => current + 1)
+      setFeedback('')
+      setFeedbackText('')
+      return
+    }
+    setFeedback(isCorrect ? 'success' : 'try')
+    if (mode === 'test' && roundIndex >= rounds - 1) {
+      setFeedbackText(`Bloc terminé : ${nextCorrectAnswers}/${rounds}.`)
+    } else {
+      setFeedbackText(isCorrect ? 'Exactement !' : mode === 'test' ? 'Réponse enregistrée.' : 'Essaie encore')
+    }
   }
 
   function next() {
@@ -208,12 +234,6 @@ export function NumberDictationActivityView({ week, activity, mode, onBack, onAn
     const isCorrect = choice === answer
     const nextCorrectAnswers = correctAnswers + (isCorrect ? 1 : 0)
     setCorrectAnswers(nextCorrectAnswers)
-    setFeedback(isCorrect ? 'success' : 'try')
-    if (mode === 'test' && roundIndex >= rounds.length - 1) {
-      setFeedbackText(`Bloc terminé : ${nextCorrectAnswers}/${rounds.length}.`)
-    } else {
-      setFeedbackText(isCorrect ? 'Bien entendu !' : mode === 'test' ? 'Réponse enregistrée.' : 'Réécoute doucement')
-    }
     onAnswer({
       activityId: activity.id,
       questionId: `${activity.id}-${roundIndex + 1}`,
@@ -221,6 +241,18 @@ export function NumberDictationActivityView({ week, activity, mode, onBack, onAn
       answer: String(choice),
       expectedAnswer: String(answer),
     })
+    if (mode === 'test' && roundIndex < rounds.length - 1) {
+      setRoundIndex((current) => current + 1)
+      setFeedback('')
+      setFeedbackText('')
+      return
+    }
+    setFeedback(isCorrect ? 'success' : 'try')
+    if (mode === 'test' && roundIndex >= rounds.length - 1) {
+      setFeedbackText(`Bloc terminé : ${nextCorrectAnswers}/${rounds.length}.`)
+    } else {
+      setFeedbackText(isCorrect ? 'Bien entendu !' : mode === 'test' ? 'Réponse enregistrée.' : 'Réécoute doucement')
+    }
   }
 
   function next() {
