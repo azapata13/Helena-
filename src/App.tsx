@@ -23,6 +23,7 @@ function App() {
   const [selectedWeekId, setSelectedWeekId] = useState(defaultWeek.id)
   const [view, setView] = useState<View>('home')
   const [activeActivityId, setActiveActivityId] = useState<string | null>(null)
+  const [pendingScore, setPendingScore] = useState<{ correct: number; total: number; nextActivity: Activity } | null>(null)
   const { progress, startTestAttempt, recordAnswer, completeActivity, completeWeek, syncWeek, resetAll } = useProgress()
   const selectedWeek = weeks.find((week) => week.id === selectedWeekId) ?? defaultWeek
   const weekProgress = useWeekProgress(selectedWeek, progress)
@@ -30,6 +31,7 @@ function App() {
   useSyncWeekProgress(selectedWeek.id, syncWeek)
 
   function startActivity(activity: Activity) {
+    setPendingScore(null)
     if (weekProgress.mode === 'test') startTestAttempt(selectedWeek.id)
     setActiveActivityId(activity.id)
     setView('activity')
@@ -54,7 +56,15 @@ function App() {
     const next = selectedWeek.activities
       .slice(currentIndex + 1)
       .find((item) => item.required !== false && !completedIds.has(item.id))
-    if (next) startActivity(next)
+    const answers = weekProgress.activeAttempt?.answers ?? []
+    const scoredBefore = weekProgress.scoredActivities.filter((item) => completedIds.has(item.id))
+    const scoredFinished = weekProgress.mode === 'test' && scoredBefore.length >= weekProgress.scoredActivities.length
+    if (next && scoredFinished && weekProgress.scoredActivities.some((item) => item.id === activity.id)) {
+      const correct = answers.filter((answer) => answer.isCorrect).length
+      setPendingScore({ correct, total: answers.length, nextActivity: next })
+      setActiveActivityId(null)
+      setView('home')
+    } else if (next) startActivity(next)
     else {
       completeWeek(selectedWeek.id, weekProgress.mode)
       setActiveActivityId(null)
@@ -84,7 +94,16 @@ function App() {
     <div className="app-shell">
       <main className="main-surface">
         {view === 'home' ? (
-          <HomeView week={selectedWeek} progress={weekProgress} onContinue={continueWeek} onStart={startActivity} />
+          pendingScore ? (
+            <ScoreCompleteView
+              correct={pendingScore.correct}
+              total={pendingScore.total}
+              nextActivity={pendingScore.nextActivity}
+              onNext={() => startActivity(pendingScore.nextActivity)}
+            />
+          ) : (
+            <HomeView week={selectedWeek} progress={weekProgress} onContinue={continueWeek} onStart={startActivity} />
+          )
         ) : null}
         {view === 'weeks' ? (
           <WeeksView
@@ -110,6 +129,38 @@ function App() {
         </button>
       </nav>
     </div>
+  )
+}
+
+function ScoreCompleteView({
+  correct,
+  total,
+  nextActivity,
+  onNext,
+}: {
+  correct: number
+  total: number
+  nextActivity: Activity
+  onNext: () => void
+}) {
+  const [grade, score] = formatScore(correct, total).split(' · ')
+
+  return (
+    <section className="score-complete-page" role="status">
+      <div className="score-complete-card">
+        <p className="eyebrow">Test terminé</p>
+        <h1>Bravo Helena !</h1>
+        <p className="score-complete-note">Tu as terminé tous les exercices notés.</p>
+        <div className="grade-medal" aria-label={`Note globale ${formatScore(correct, total)}`}>
+          {grade}
+        </div>
+        <strong className="score-total">Note globale : {score ?? `${correct}/${total}`}</strong>
+        <p className="score-next">Prochaine étape : {nextActivity.title.toLowerCase()}.</p>
+        <button className="primary-button score-next-button" type="button" onClick={onNext}>
+          Suivant
+        </button>
+      </div>
+    </section>
   )
 }
 
@@ -142,9 +193,6 @@ function HomeView({
             <div className="sparkles" aria-hidden="true">★ ★ ★</div>
             <h2>Bravo Helena !</h2>
             <p>Tu as terminé ta semaine.</p>
-            {progress.lastAttempt && progress.lastAttempt.totalQuestions > 0 ? (
-              <strong className="global-grade">Note globale : {formatScore(progress.lastAttempt.correctAnswers, progress.lastAttempt.totalQuestions)}</strong>
-            ) : null}
           </div>
         ) : (
           <p className="week-note">

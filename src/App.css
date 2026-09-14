@@ -81,8 +81,16 @@ button:focus-visible { outline: 4px solid rgba(40,129,255,.46); outline-offset: 
 .word-preview-grid small { font-size: clamp(1.15rem,2.5vw,1.7rem); line-height: 1; }
 .celebration { position: relative; z-index: 1; background: #eaf8f3; border-radius: 26px; padding: 28px; max-width: 520px; }
 .celebration h2 { color: #253044; font-size: clamp(2rem,4vw,3.4rem); margin: 6px 0; }
-.global-grade { display: inline-block; margin-top: 10px; color: #2f6f64; font-size: clamp(1.45rem,3vw,2.2rem); line-height: 1.1; }
 .sparkles { color: #d99b00; font-size: 2rem; animation: floaty 1.6s ease-in-out infinite alternate; }
+.score-complete-page { min-height: min(720px, calc(100svh - 128px)); display: grid; place-items: center; }
+.score-complete-card { width: min(960px,100%); min-height: 620px; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; text-align: center; background: rgba(255,255,255,.9); border: 1px solid rgba(41,50,65,.08); border-radius: 32px; box-shadow: 0 24px 70px rgba(56,41,20,.12); padding: clamp(28px,5vw,58px); }
+.score-complete-card::before { content: ''; position: absolute; inset: auto -80px -120px -80px; height: 250px; background: #eaf8f3; border-radius: 50% 50% 0 0; }
+.score-complete-card > * { position: relative; z-index: 1; }
+.score-complete-card h1 { margin: 0; color: #253044; font-size: clamp(2.7rem,7vw,5rem); line-height: 1; }
+.score-complete-note, .score-next { max-width: 680px; margin: 0; color: #58647a; font-size: clamp(1.2rem,2.4vw,1.8rem); font-weight: 800; line-height: 1.3; }
+.grade-medal { width: clamp(190px,28vw,260px); aspect-ratio: 1; display: grid; place-items: center; border-radius: 50%; background: radial-gradient(circle at center, #fff9ee 0 58%, #ffe7aa 59% 100%); color: #2f6f64; font-size: clamp(5rem,12vw,8rem); font-weight: 950; box-shadow: 0 18px 42px rgba(75,57,16,.14); }
+.score-total { color: #6d5a35; font-size: clamp(1.35rem,3vw,2rem); line-height: 1.1; }
+.score-next-button { margin-top: 4px; min-width: min(100%, 320px); }
 
 @keyframes gentle-shake { 20% { transform: translateX(-4px); } 40% { transform: translateX(4px); } 60% { transform: translateX(-2px); } 80% { transform: translateX(2px); } }
 @keyframes floaty { from { transform: translateY(0); } to { transform: translateY(-7px); } }
