@@ -81,6 +81,7 @@ button:focus-visible { outline: 4px solid rgba(40,129,255,.46); outline-offset: 
 .word-preview-grid small { font-size: clamp(1.15rem,2.5vw,1.7rem); line-height: 1; }
 .celebration { position: relative; z-index: 1; background: #eaf8f3; border-radius: 26px; padding: 28px; max-width: 520px; }
 .celebration h2 { color: #253044; font-size: clamp(2rem,4vw,3.4rem); margin: 6px 0; }
+.global-grade { display: inline-block; margin-top: 10px; color: #2f6f64; font-size: clamp(1.45rem,3vw,2.2rem); line-height: 1.1; }
 .sparkles { color: #d99b00; font-size: 2rem; animation: floaty 1.6s ease-in-out infinite alternate; }
 
 @keyframes gentle-shake { 20% { transform: translateX(-4px); } 40% { transform: translateX(4px); } 60% { transform: translateX(-2px); } 80% { transform: translateX(2px); } }

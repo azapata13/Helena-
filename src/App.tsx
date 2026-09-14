@@ -6,6 +6,7 @@ import { getCurrentWeek, weeks } from './content'
 import { useProgress, useSyncWeekProgress, useWeekProgress } from './hooks/useProgress'
 import type { ActivityAnswer } from './storage/progress'
 import type { Activity, Subject, WeekContent } from './types/content'
+import { formatScore } from './utils/grades'
 
 type View = 'home' | 'weeks' | 'stars' | 'activity'
 
@@ -141,6 +142,9 @@ function HomeView({
             <div className="sparkles" aria-hidden="true">★ ★ ★</div>
             <h2>Bravo Helena !</h2>
             <p>Tu as terminé ta semaine.</p>
+            {progress.lastAttempt && progress.lastAttempt.totalQuestions > 0 ? (
+              <strong className="global-grade">Note globale : {formatScore(progress.lastAttempt.correctAnswers, progress.lastAttempt.totalQuestions)}</strong>
+            ) : null}
           </div>
         ) : (
           <p className="week-note">
@@ -231,7 +235,7 @@ function scoreLabel(progress: ReturnType<typeof useWeekProgress>): string {
   const lastAttempt = progress.lastAttempt
   if (activeAnswers > 0) return 'Continue. Tu verras une note à la fin de chaque bloc.'
   if (lastAttempt && lastAttempt.totalQuestions > 0) {
-    return `Dernier passage enregistré. Les notes apparaissent par bloc quand tu refais les exercices.`
+    return `Dernière note globale : ${formatScore(lastAttempt.correctAnswers, lastAttempt.totalQuestions)}. Les notes apparaissent aussi par bloc.`
   }
   return 'Complété 1 fois cette semaine. Maintenant, tu peux refaire les exercices.'
 }
