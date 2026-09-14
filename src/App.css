@@ -15,8 +15,10 @@
 .hero-panel::after { content: ''; position: absolute; right: -64px; bottom: -80px; width: 280px; height: 280px; border-radius: 42% 58% 52% 48%; background: #ffd66b; opacity: .38; }
 .hello-row { display: flex; justify-content: space-between; gap: 24px; align-items: start; position: relative; z-index: 1; }
 .hello-row > div { min-width: 0; }
+.hero-heading { display: grid; justify-items: start; gap: 10px; }
 .eyebrow, .activity-kind, .soft-label { color: #5b7f78; font-size: .92rem; font-weight: 900; letter-spacing: 0; text-transform: uppercase; }
-.hero-panel h1, .simple-page h1 { color: #253044; font-size: clamp(2.25rem,5vw,4.7rem); line-height: .98; margin: 10px 0 0; max-width: 780px; overflow-wrap: anywhere; }
+.hero-panel h1 { color: #253044; font-size: clamp(1.45rem,3vw,2.6rem); line-height: 1.06; margin: 0; max-width: 620px; overflow-wrap: anywhere; }
+.simple-page h1 { color: #253044; font-size: clamp(2.25rem,5vw,4.7rem); line-height: .98; margin: 10px 0 0; max-width: 780px; overflow-wrap: anywhere; }
 .week-note { max-width: 680px; font-size: clamp(1.22rem,2.4vw,1.85rem); line-height: 1.35; color: #4d5870; position: relative; z-index: 1; overflow-wrap: anywhere; word-break: break-word; }
 .progress-orb { width: 142px; aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center; flex: 0 0 auto; background: conic-gradient(#50b8a4 var(--progress), #f0e4cf 0); position: relative; color: #253044; }
 .progress-orb::before { content: ''; position: absolute; inset: 12px; border-radius: inherit; background: #fffaf0; }
@@ -101,7 +103,9 @@ button:focus-visible { outline: 4px solid rgba(40,129,255,.46); outline-offset: 
 @media (max-width: 620px) {
   .hello-row { flex-direction: column; }
   .hero-panel { padding: 28px; }
-  .hero-panel h1, .simple-page h1 { font-size: 1.92rem; line-height: 1.06; }
+  .hero-panel h1 { font-size: 1.35rem; line-height: 1.12; }
+  .simple-page h1 { font-size: 1.92rem; line-height: 1.06; }
+  .hero-action { min-width: min(100%, 260px); }
   .week-note { font-size: 1.12rem; }
   .progress-orb { width: 118px; }
   .activity-list, .choice-grid, .choice-grid.two { grid-template-columns: 1fr; }

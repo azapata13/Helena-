@@ -127,8 +127,11 @@ function HomeView({
     <section className="home-grid">
       <div className="hero-panel">
         <div className="hello-row">
-          <div>
+          <div className="hero-heading">
             <p className="eyebrow">Bonjour Helena</p>
+            <button className="primary-button hero-action" type="button" onClick={onContinue}>
+              {progress.mode === 'test' ? 'Refaire en mode test' : progress.completedCount > 0 ? 'Continuer' : 'Commencer'}
+            </button>
             <h1>{week.title}</h1>
           </div>
           <ProgressRing percent={progress.percent} label={`${progress.completedCount}/${progress.requiredCount}`} />
@@ -146,9 +149,6 @@ function HomeView({
               : week.summary.vocabulary ?? 'Prête pour une belle semaine ?'}
           </p>
         )}
-        <button className="primary-button hero-action" type="button" onClick={onContinue}>
-          {progress.mode === 'test' ? 'Refaire en mode test' : progress.completedCount > 0 ? 'Continuer' : 'Commencer'}
-        </button>
       </div>
       <div className="activity-list" aria-label="Activités de la semaine">
         {week.activities.map((activity) => {
