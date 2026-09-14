@@ -1,4 +1,5 @@
 import type { Activity, WeekContent } from '../types/content'
+import type { ActivityAnswer } from '../storage/progress'
 import { WordActivityView } from './WordActivities'
 import {
   AlphabeticalActivityView,
@@ -13,7 +14,9 @@ import {
 type Props = {
   week: WeekContent
   activity: Activity
+  mode: 'guided' | 'test'
   onBack: () => void
+  onAnswer: (answer: Omit<ActivityAnswer, 'createdAt'>) => void
   onComplete: () => void
 }
 

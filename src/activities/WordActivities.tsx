@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { AudioButton } from '../components/AudioButton'
+import type { ActivityAnswer } from '../storage/progress'
 import type { WeekContent, WordActivity } from '../types/content'
 import { makeLetterChoices, makeWordChoices, makeWordRounds } from '../utils/games'
 import { shuffle } from '../utils/random'
@@ -8,13 +9,15 @@ import { ActivityShell } from './ActivityShell'
 type Props = {
   week: WeekContent
   activity: WordActivity
+  mode: 'guided' | 'test'
   onBack: () => void
+  onAnswer: (answer: Omit<ActivityAnswer, 'createdAt'>) => void
   onComplete: () => void
 }
 
 const praise = ['Bravo !', 'Super !', 'Bien joué !', 'Tu l’as trouvé !']
 
-export function WordActivityView({ week, activity, onBack, onComplete }: Props) {
+export function WordActivityView({ week, activity, mode, onBack, onAnswer, onComplete }: Props) {
   const rounds = useMemo(
     () => makeWordRounds(activity.words, activity.rounds ?? activity.words.length, `${week.id}-${activity.id}`),
     [activity, week.id],
@@ -25,16 +28,22 @@ export function WordActivityView({ week, activity, onBack, onComplete }: Props) 
   const [feedbackText, setFeedbackText] = useState('')
   const answer = rounds[roundIndex] ?? rounds[0]
   const isFinalRound = roundIndex >= rounds.length - 1
-  const isRoundComplete = feedback === 'success'
+  const isRoundComplete = mode === 'test' ? feedback !== '' : feedback === 'success'
 
-  function celebrate() {
-    setFeedback('success')
-    setFeedbackText(praise[roundIndex % praise.length])
+  function recordRound(isCorrect: boolean, givenAnswer: string) {
+    onAnswer({
+      activityId: activity.id,
+      questionId: `${activity.id}-${roundIndex + 1}`,
+      isCorrect,
+      answer: givenAnswer,
+      expectedAnswer: answer,
+    })
   }
 
-  function tryAgain() {
-    setFeedback('try')
-    setFeedbackText('Essaie encore')
+  function answerRound(isCorrect: boolean, givenAnswer: string) {
+    recordRound(isCorrect, givenAnswer)
+    setFeedback(isCorrect ? 'success' : 'try')
+    setFeedbackText(isCorrect ? praise[roundIndex % praise.length] : mode === 'test' ? `La bonne réponse était ${answer}.` : 'Essaie encore')
   }
 
   function next() {
@@ -63,7 +72,7 @@ export function WordActivityView({ week, activity, onBack, onComplete }: Props) 
         </div>
         <div className="choice-grid letter-grid">
           {puzzle.choices.map((choice) => (
-            <button className="choice-button" type="button" key={choice} disabled={isRoundComplete} onClick={() => (choice === puzzle.answer ? celebrate() : tryAgain())}>
+            <button className="choice-button" type="button" key={choice} disabled={isRoundComplete} onClick={() => answerRound(choice === puzzle.answer, choice)}>
               {choice.toUpperCase()}
             </button>
           ))}
@@ -80,7 +89,7 @@ export function WordActivityView({ week, activity, onBack, onComplete }: Props) 
         <h1 className="big-question">{activity.type === 'findWord' ? `Trouve « ${answer} »` : 'Quel mot entends-tu ?'}</h1>
         <div className="choice-grid">
           {choices.map((choice) => (
-            <button className="choice-button word-choice" type="button" key={choice} disabled={isRoundComplete} onClick={() => (choice === answer ? celebrate() : tryAgain())}>
+            <button className="choice-button word-choice" type="button" key={choice} disabled={isRoundComplete} onClick={() => answerRound(choice === answer, choice)}>
               {choice}
             </button>
           ))}
@@ -98,8 +107,8 @@ export function WordActivityView({ week, activity, onBack, onComplete }: Props) 
     const nextLetters = [...builtLetters, letter]
     setBuiltLetters(nextLetters)
     const nextAnswer = nextLetters.join('')
-    if (nextAnswer === answer) celebrate()
-    else if (nextLetters.length === answer.length) tryAgain()
+    if (nextAnswer === answer) answerRound(true, nextAnswer)
+    else if (nextLetters.length === answer.length) answerRound(false, nextAnswer)
   }
 
   return (

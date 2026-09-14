@@ -3,7 +3,8 @@ import './App.css'
 import { ActivityRenderer } from './activities/ActivityRenderer'
 import { ProgressRing } from './components/ProgressRing'
 import { getCurrentWeek, weeks } from './content'
-import { useProgress, useWeekProgress } from './hooks/useProgress'
+import { useProgress, useSyncWeekProgress, useWeekProgress } from './hooks/useProgress'
+import type { ActivityAnswer } from './storage/progress'
 import type { Activity, Subject, WeekContent } from './types/content'
 
 type View = 'home' | 'weeks' | 'stars' | 'activity'
@@ -21,12 +22,14 @@ function App() {
   const [selectedWeekId, setSelectedWeekId] = useState(defaultWeek.id)
   const [view, setView] = useState<View>('home')
   const [activeActivityId, setActiveActivityId] = useState<string | null>(null)
-  const { progress, completeActivity, resetAll } = useProgress()
+  const { progress, startTestAttempt, recordAnswer, completeActivity, completeWeek, syncWeek, resetAll } = useProgress()
   const selectedWeek = weeks.find((week) => week.id === selectedWeekId) ?? defaultWeek
   const weekProgress = useWeekProgress(selectedWeek, progress)
   const currentActivity = selectedWeek.activities.find((activity) => activity.id === activeActivityId)
+  useSyncWeekProgress(selectedWeek.id, syncWeek)
 
   function startActivity(activity: Activity) {
+    if (weekProgress.mode === 'test') startTestAttempt(selectedWeek.id)
     setActiveActivityId(activity.id)
     setView('activity')
   }
@@ -36,18 +39,30 @@ function App() {
   }
 
   function finishActivity(activity: Activity) {
-    completeActivity(selectedWeek.id, activity)
-    const updatedRecords = {
-      ...weekProgress.records,
-      [activity.id]: { completed: true },
-    }
+    completeActivity(selectedWeek.id, activity, weekProgress.mode)
     const currentIndex = selectedWeek.activities.findIndex((item) => item.id === activity.id)
-    const next = selectedWeek.activities.slice(currentIndex + 1).find((item) => !updatedRecords[item.id]?.completed)
+    const completedIds =
+      weekProgress.mode === 'test'
+        ? new Set([...(weekProgress.activeAttempt?.completedActivityIds ?? []), activity.id])
+        : new Set([
+            ...Object.entries(weekProgress.records)
+              .filter(([, record]) => record.completed)
+              .map(([activityId]) => activityId),
+            activity.id,
+          ])
+    const next = selectedWeek.activities
+      .slice(currentIndex + 1)
+      .find((item) => item.required !== false && !completedIds.has(item.id))
     if (next) startActivity(next)
     else {
+      completeWeek(selectedWeek.id, weekProgress.mode)
       setActiveActivityId(null)
       setView('home')
     }
+  }
+
+  function handleAnswer(answer: Omit<ActivityAnswer, 'createdAt'>) {
+    if (weekProgress.mode === 'test') recordAnswer(selectedWeek.id, answer)
   }
 
   if (view === 'activity' && currentActivity) {
@@ -56,7 +71,9 @@ function App() {
         key={`${selectedWeek.id}-${currentActivity.id}`}
         week={selectedWeek}
         activity={currentActivity}
+        mode={weekProgress.mode}
         onBack={() => setView('home')}
+        onAnswer={handleAnswer}
         onComplete={() => finishActivity(currentActivity)}
       />
     )
@@ -123,10 +140,14 @@ function HomeView({
             <p>Tu as terminé ta semaine.</p>
           </div>
         ) : (
-          <p className="week-note">{week.summary.vocabulary ?? 'Prête pour une belle semaine ?'}</p>
+          <p className="week-note">
+            {progress.mode === 'test'
+              ? scoreLabel(progress)
+              : week.summary.vocabulary ?? 'Prête pour une belle semaine ?'}
+          </p>
         )}
         <button className="primary-button hero-action" type="button" onClick={onContinue}>
-          {progress.completedCount > 0 ? 'Continuer' : 'Commencer'}
+          {progress.mode === 'test' ? 'Refaire en mode test' : progress.completedCount > 0 ? 'Continuer' : 'Commencer'}
         </button>
       </div>
       <div className="activity-list" aria-label="Activités de la semaine">
@@ -163,12 +184,13 @@ function WeeksView({
       <div className="week-list">
         {[...weeks].reverse().map((week) => {
           const records = progress.weeks[week.id] ?? {}
+          const completions = progress.weekMeta[week.id]?.completionCount ?? 0
           const completed = week.activities.filter((activity) => records[activity.id]?.completed).length
           return (
             <button className={`week-card ${week.id === selectedWeekId ? 'selected' : ''}`} type="button" key={week.id} onClick={() => onSelect(week)}>
               <span>
                 <strong>{week.title}</strong>
-                <small>{completed} / {week.activities.length} activités</small>
+                <small>{completed} / {week.activities.length} activités · {completions} complétion{completions > 1 ? 's' : ''}</small>
               </span>
               <b>{week.id === selectedWeekId ? 'Cette semaine' : 'Ouvrir'}</b>
             </button>
@@ -190,6 +212,7 @@ function StarsView({
 }) {
   const stars = Object.values(progress.weeks).flatMap((week) => Object.values(week)).reduce((sum, record) => sum + record.stars, 0)
   const completedWeeks = allWeeks.filter((week) => week.activities.every((activity) => progress.weeks[week.id]?.[activity.id]?.completed))
+  const completedAttempts = Object.values(progress.weekMeta).reduce((sum, week) => sum + week.completionCount, 0)
   return (
     <section className="simple-page stars-page">
       <h1>Mes étoiles</h1>
@@ -197,10 +220,20 @@ function StarsView({
         <span aria-hidden="true">★</span>
         <strong>{stars}</strong>
       </div>
-      <p>{completedWeeks.length > 0 ? `${completedWeeks.length} semaine terminée. Bravo !` : 'Termine une activité pour gagner tes premières étoiles.'}</p>
+      <p>{completedWeeks.length > 0 ? `${completedWeeks.length} semaine terminée · ${completedAttempts} passage${completedAttempts > 1 ? 's' : ''}. Bravo !` : 'Termine une activité pour gagner tes premières étoiles.'}</p>
       <button className="parent-reset" type="button" onClick={onReset}>Réinitialiser les progrès</button>
     </section>
   )
+}
+
+function scoreLabel(progress: ReturnType<typeof useWeekProgress>): string {
+  const activeAnswers = progress.activeAttempt?.answers.length ?? 0
+  const lastAttempt = progress.lastAttempt
+  if (activeAnswers > 0) return 'Continue le test. Le score apparaîtra à la fin.'
+  if (lastAttempt && lastAttempt.totalQuestions > 0) {
+    return `Dernier score : ${lastAttempt.correctAnswers}/${lastAttempt.totalQuestions}. Tu peux refaire la semaine.`
+  }
+  return 'Complété 1 fois cette semaine. Maintenant, tu peux refaire les exercices en mode test.'
 }
 
 function iconFor(subject: Subject): string {
