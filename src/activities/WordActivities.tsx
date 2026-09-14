@@ -26,6 +26,7 @@ export function WordActivityView({ week, activity, mode, onBack, onAnswer, onCom
   const [builtLetters, setBuiltLetters] = useState<string[]>([])
   const [feedback, setFeedback] = useState<'success' | 'try' | ''>('')
   const [feedbackText, setFeedbackText] = useState('')
+  const [correctAnswers, setCorrectAnswers] = useState(0)
   const answer = rounds[roundIndex] ?? rounds[0]
   const isFinalRound = roundIndex >= rounds.length - 1
   const isRoundComplete = mode === 'test' ? feedback !== '' : feedback === 'success'
@@ -42,8 +43,14 @@ export function WordActivityView({ week, activity, mode, onBack, onAnswer, onCom
 
   function answerRound(isCorrect: boolean, givenAnswer: string) {
     recordRound(isCorrect, givenAnswer)
+    const nextCorrectAnswers = correctAnswers + (isCorrect ? 1 : 0)
+    setCorrectAnswers(nextCorrectAnswers)
     setFeedback(isCorrect ? 'success' : 'try')
-    setFeedbackText(isCorrect ? praise[roundIndex % praise.length] : mode === 'test' ? `La bonne réponse était ${answer}.` : 'Essaie encore')
+    if (mode === 'test' && isFinalRound) {
+      setFeedbackText(`Bloc terminé : ${nextCorrectAnswers}/${rounds.length}.`)
+      return
+    }
+    setFeedbackText(isCorrect ? praise[roundIndex % praise.length] : mode === 'test' ? 'Réponse enregistrée.' : 'Essaie encore')
   }
 
   function next() {

@@ -30,6 +30,8 @@ export function AlphabeticalActivityView({ week, activity, mode, onBack, onAnswe
   const [roundIndex, setRoundIndex] = useState(0)
   const [selected, setSelected] = useState<string[]>([])
   const [feedback, setFeedback] = useState<'success' | 'try' | ''>('')
+  const [feedbackText, setFeedbackText] = useState('')
+  const [correctAnswers, setCorrectAnswers] = useState(0)
   const set = activity.sets[roundIndex] ?? activity.sets[0]
   const answer = [...set].sort((a, b) => a.localeCompare(b, 'fr'))
   const choices = useMemo(() => shuffle(set, `${week.id}-${activity.id}-${roundIndex}`), [activity.id, roundIndex, set, week.id])
@@ -42,7 +44,14 @@ export function AlphabeticalActivityView({ week, activity, mode, onBack, onAnswe
     setSelected(next)
     if (next.length === answer.length) {
       const isCorrect = next.every((item, index) => item === answer[index])
+      const nextCorrectAnswers = correctAnswers + (isCorrect ? 1 : 0)
+      setCorrectAnswers(nextCorrectAnswers)
       setFeedback(isCorrect ? 'success' : 'try')
+      if (mode === 'test' && roundIndex >= activity.sets.length - 1) {
+        setFeedbackText(`Bloc terminé : ${nextCorrectAnswers}/${activity.sets.length}.`)
+      } else {
+        setFeedbackText(isCorrect ? 'Parfait !' : mode === 'test' ? 'Réponse enregistrée.' : 'On remet dans l’ordre et on recommence')
+      }
       onAnswer({
         activityId: activity.id,
         questionId: `${activity.id}-${roundIndex + 1}`,
@@ -59,11 +68,12 @@ export function AlphabeticalActivityView({ week, activity, mode, onBack, onAnswe
       setRoundIndex((current) => current + 1)
       setSelected([])
       setFeedback('')
+      setFeedbackText('')
     }
   }
 
   return (
-    <ActivityShell week={week} activity={activity} roundLabel={`${roundIndex + 1} / ${activity.sets.length}`} feedback={feedback} feedbackText={feedback === 'success' ? 'Parfait !' : feedback === 'try' ? (mode === 'test' ? `Réponse : ${answer.join(', ')}` : 'On remet dans l’ordre et on recommence') : ''} isComplete={complete} onBack={onBack} onNext={next}>
+    <ActivityShell week={week} activity={activity} roundLabel={`${roundIndex + 1} / ${activity.sets.length}`} feedback={feedback} feedbackText={feedbackText} isComplete={complete} onBack={onBack} onNext={next}>
       <h1 className="big-question">Tape les mots en ordre alphabétique</h1>
       <div className="answer-strip">{selected.map((word) => <span key={word}>{word}</span>)}</div>
       <div className="choice-grid">
@@ -73,7 +83,7 @@ export function AlphabeticalActivityView({ week, activity, mode, onBack, onAnswe
           </button>
         ))}
       </div>
-      <button className="ghost-button" type="button" onClick={() => { setSelected([]); setFeedback('') }}>Recommencer</button>
+      <button className="ghost-button" type="button" onClick={() => { setSelected([]); setFeedback(''); setFeedbackText('') }}>Recommencer</button>
     </ActivityShell>
   )
 }
@@ -82,12 +92,21 @@ export function NounSortActivityView({ week, activity, mode, onBack, onAnswer, o
   const rounds = useMemo(() => pickRoundItems(activity.items, activity.rounds ?? activity.items.length, `${week.id}-${activity.id}`), [activity, week.id])
   const [roundIndex, setRoundIndex] = useState(0)
   const [feedback, setFeedback] = useState<'success' | 'try' | ''>('')
+  const [feedbackText, setFeedbackText] = useState('')
+  const [correctAnswers, setCorrectAnswers] = useState(0)
   const item = rounds[roundIndex]
   const isComplete = mode === 'test' ? feedback !== '' : feedback === 'success'
 
   function choose(answer: 'proper' | 'common') {
     const isCorrect = item.answer === answer
+    const nextCorrectAnswers = correctAnswers + (isCorrect ? 1 : 0)
+    setCorrectAnswers(nextCorrectAnswers)
     setFeedback(isCorrect ? 'success' : 'try')
+    if (mode === 'test' && roundIndex >= rounds.length - 1) {
+      setFeedbackText(`Bloc terminé : ${nextCorrectAnswers}/${rounds.length}.`)
+    } else {
+      setFeedbackText(isCorrect ? 'Oui !' : mode === 'test' ? 'Réponse enregistrée.' : 'Regarde l’indice et essaie encore')
+    }
     onAnswer({
       activityId: activity.id,
       questionId: `${activity.id}-${roundIndex + 1}`,
@@ -102,11 +121,12 @@ export function NounSortActivityView({ week, activity, mode, onBack, onAnswer, o
     else {
       setRoundIndex((current) => current + 1)
       setFeedback('')
+      setFeedbackText('')
     }
   }
 
   return (
-    <ActivityShell week={week} activity={activity} roundLabel={`${roundIndex + 1} / ${rounds.length}`} feedback={feedback} feedbackText={feedback === 'success' ? 'Oui !' : feedback === 'try' ? (mode === 'test' ? `Réponse : ${item.answer === 'proper' ? 'nom propre' : 'nom commun'}` : 'Regarde l’indice et essaie encore') : ''} isComplete={isComplete} onBack={onBack} onNext={next}>
+    <ActivityShell week={week} activity={activity} roundLabel={`${roundIndex + 1} / ${rounds.length}`} feedback={feedback} feedbackText={feedbackText} isComplete={isComplete} onBack={onBack} onNext={next}>
       <p className="soft-label">Indice : {item.hint}</p>
       <h1 className="spotlight-word">{item.text}</h1>
       <div className="choice-grid two">
@@ -120,6 +140,8 @@ export function NounSortActivityView({ week, activity, mode, onBack, onAnswer, o
 export function NumberSequenceActivityView({ week, activity, mode, onBack, onAnswer, onComplete }: CommonProps<NumberSequenceActivity>) {
   const [roundIndex, setRoundIndex] = useState(0)
   const [feedback, setFeedback] = useState<'success' | 'try' | ''>('')
+  const [feedbackText, setFeedbackText] = useState('')
+  const [correctAnswers, setCorrectAnswers] = useState(0)
   const rounds = activity.rounds ?? 5
   const puzzle = makeNumberSequence(activity.min, activity.max, activity.steps, `${week.id}-${activity.id}-${roundIndex}`)
 
@@ -127,7 +149,14 @@ export function NumberSequenceActivityView({ week, activity, mode, onBack, onAns
 
   function choose(choice: number) {
     const isCorrect = choice === puzzle.answer
+    const nextCorrectAnswers = correctAnswers + (isCorrect ? 1 : 0)
+    setCorrectAnswers(nextCorrectAnswers)
     setFeedback(isCorrect ? 'success' : 'try')
+    if (mode === 'test' && roundIndex >= rounds - 1) {
+      setFeedbackText(`Bloc terminé : ${nextCorrectAnswers}/${rounds}.`)
+    } else {
+      setFeedbackText(isCorrect ? 'Exactement !' : mode === 'test' ? 'Réponse enregistrée.' : 'Essaie encore')
+    }
     onAnswer({
       activityId: activity.id,
       questionId: `${activity.id}-${roundIndex + 1}`,
@@ -142,11 +171,12 @@ export function NumberSequenceActivityView({ week, activity, mode, onBack, onAns
     else {
       setRoundIndex((current) => current + 1)
       setFeedback('')
+      setFeedbackText('')
     }
   }
 
   return (
-    <ActivityShell week={week} activity={activity} roundLabel={`${roundIndex + 1} / ${rounds}`} feedback={feedback} feedbackText={feedback === 'success' ? 'Exactement !' : feedback === 'try' ? (mode === 'test' ? `Réponse : ${puzzle.answer}` : 'Essaie encore') : ''} isComplete={isComplete} onBack={onBack} onNext={next}>
+    <ActivityShell week={week} activity={activity} roundLabel={`${roundIndex + 1} / ${rounds}`} feedback={feedback} feedbackText={feedbackText} isComplete={isComplete} onBack={onBack} onNext={next}>
       <h1 className="big-question">Compte par bonds de {puzzle.step}</h1>
       <div className="number-sequence">
         {puzzle.sequence.map((value, index) => <span key={`${value}-${index}`}>{index === puzzle.missingIndex ? '?' : value}</span>)}
@@ -168,13 +198,22 @@ export function NumberDictationActivityView({ week, activity, mode, onBack, onAn
   const rounds = useMemo(() => pickRoundItems(numbers, activity.rounds ?? 5, `${week.id}-${activity.id}`), [activity, numbers, week.id])
   const [roundIndex, setRoundIndex] = useState(0)
   const [feedback, setFeedback] = useState<'success' | 'try' | ''>('')
+  const [feedbackText, setFeedbackText] = useState('')
+  const [correctAnswers, setCorrectAnswers] = useState(0)
   const answer = rounds[roundIndex]
   const choices = makeNumberChoices(answer, activity.min, activity.max, `${week.id}-${activity.id}-${roundIndex}`)
   const isComplete = mode === 'test' ? feedback !== '' : feedback === 'success'
 
   function choose(choice: number) {
     const isCorrect = choice === answer
+    const nextCorrectAnswers = correctAnswers + (isCorrect ? 1 : 0)
+    setCorrectAnswers(nextCorrectAnswers)
     setFeedback(isCorrect ? 'success' : 'try')
+    if (mode === 'test' && roundIndex >= rounds.length - 1) {
+      setFeedbackText(`Bloc terminé : ${nextCorrectAnswers}/${rounds.length}.`)
+    } else {
+      setFeedbackText(isCorrect ? 'Bien entendu !' : mode === 'test' ? 'Réponse enregistrée.' : 'Réécoute doucement')
+    }
     onAnswer({
       activityId: activity.id,
       questionId: `${activity.id}-${roundIndex + 1}`,
@@ -189,11 +228,12 @@ export function NumberDictationActivityView({ week, activity, mode, onBack, onAn
     else {
       setRoundIndex((current) => current + 1)
       setFeedback('')
+      setFeedbackText('')
     }
   }
 
   return (
-    <ActivityShell week={week} activity={activity} roundLabel={`${roundIndex + 1} / ${rounds.length}`} feedback={feedback} feedbackText={feedback === 'success' ? 'Bien entendu !' : feedback === 'try' ? (mode === 'test' ? `Réponse : ${answer}` : 'Réécoute doucement') : ''} isComplete={isComplete} onBack={onBack} onNext={next}>
+    <ActivityShell week={week} activity={activity} roundLabel={`${roundIndex + 1} / ${rounds.length}`} feedback={feedback} feedbackText={feedbackText} isComplete={isComplete} onBack={onBack} onNext={next}>
       <AudioButton text={numberToFrench(answer)} label="Écoute le nombre" />
       <h1 className="big-question">Quel nombre entends-tu ?</h1>
       <div className="choice-grid">
