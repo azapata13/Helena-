@@ -130,7 +130,7 @@ function HomeView({
           <div className="hero-heading">
             <p className="eyebrow">Bonjour Helena</p>
             <button className="primary-button hero-action" type="button" onClick={onContinue}>
-              {progress.mode === 'test' ? 'Refaire en mode test' : progress.completedCount > 0 ? 'Continuer' : 'Commencer'}
+              {progress.mode === 'test' ? 'Refaire' : progress.completedCount > 0 ? 'Continuer' : 'Commencer'}
             </button>
             <h1>{week.title}</h1>
           </div>
@@ -229,11 +229,11 @@ function StarsView({
 function scoreLabel(progress: ReturnType<typeof useWeekProgress>): string {
   const activeAnswers = progress.activeAttempt?.answers.length ?? 0
   const lastAttempt = progress.lastAttempt
-  if (activeAnswers > 0) return 'Continue le test. Tu verras une note à la fin de chaque bloc.'
+  if (activeAnswers > 0) return 'Continue. Tu verras une note à la fin de chaque bloc.'
   if (lastAttempt && lastAttempt.totalQuestions > 0) {
     return `Dernier passage enregistré. Les notes apparaissent par bloc quand tu refais les exercices.`
   }
-  return 'Complété 1 fois cette semaine. Maintenant, tu peux refaire les exercices en mode test.'
+  return 'Complété 1 fois cette semaine. Maintenant, tu peux refaire les exercices.'
 }
 
 function iconFor(subject: Subject): string {

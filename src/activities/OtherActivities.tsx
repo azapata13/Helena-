@@ -282,7 +282,7 @@ export function ReadingActivityView({ week, activity, onBack, onComplete }: Comm
     <ActivityShell week={week} activity={activity} isComplete={false} onBack={onBack} onNext={onComplete}>
       <div className="quiet-illustration" aria-hidden="true">📖</div>
       <h1 className="big-question">{activity.prompt}</h1>
-      <button className="primary-button next-button" type="button" onClick={onComplete}>J’ai terminé</button>
+      <button className="primary-button next-button" type="button" onClick={onComplete}>Suivant</button>
     </ActivityShell>
   )
 }
@@ -301,7 +301,7 @@ export function WordPreviewActivityView({ week, activity, onBack, onComplete }: 
           </button>
         ))}
       </div>
-      <button className="primary-button next-button" type="button" onClick={onComplete}>J’ai lu les mots</button>
+      <button className="primary-button next-button" type="button" onClick={onComplete}>Suivant</button>
     </ActivityShell>
   )
 }
@@ -314,7 +314,7 @@ export function WritingActivityView({ week, activity, onBack, onComplete }: Comm
       <ul className="checklist">
         {activity.checklist.map((item) => <li key={item}>{item}</li>)}
       </ul>
-      <button className="primary-button next-button" type="button" onClick={onComplete}>J’ai terminé</button>
+      <button className="primary-button next-button" type="button" onClick={onComplete}>Suivant</button>
     </ActivityShell>
   )
 }
