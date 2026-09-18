@@ -5,7 +5,7 @@ export const week20260914: WeekContent = {
   title: 'Semaine du 14 au 18 septembre',
   startDate: '2026-09-14',
   endDate: '2026-09-18',
-  status: 'current',
+  status: 'past',
   summary: {
     reading: 'Lecture de petits livres à la maison ou à la bibliothèque.',
     vocabulary: 'Bloc 1, semaine 3. La lettre finale silencieuse aide à trouver le féminin.',

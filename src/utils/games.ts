@@ -23,14 +23,15 @@ export function makeWordChoices(answer: string, allWords: string[], seed: string
 
 export function makeNumberSequence(min: number, max: number, steps: number[], seed: string) {
   const step = steps[Math.abs(seed.length + seed.charCodeAt(0)) % steps.length]
-  const startMax = max - step * 3
-  const start = min + (Math.abs(hashString(seed)) % Math.max(1, startMax - min + 1))
+  const startMin = step < 0 ? min - step * 3 : min
+  const startMax = step > 0 ? max - step * 3 : max
+  const start = startMin + (Math.abs(hashString(seed)) % Math.max(1, startMax - startMin + 1))
   const sequence = [start, start + step, start + step * 2, start + step * 3]
   const missingIndex = 2
   const answer = sequence[missingIndex]
-  const rawChoices = [answer, answer + step, Math.max(min, answer - step), Math.min(max, answer + step * 2)]
+  const rawChoices = [answer, answer + step, answer - step, answer + step * 2]
   const choices = shuffle(
-    rawChoices.filter((value, index, self) => value <= max && self.indexOf(value) === index),
+    rawChoices.filter((value, index, self) => value >= min && value <= max && self.indexOf(value) === index),
     seed,
   )
   return { sequence, missingIndex, answer, choices, step }
