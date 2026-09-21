@@ -3,17 +3,25 @@
   "name": "Elena",
   "short_name": "Elena",
   "description": "L’app privée d’apprentissage hebdomadaire de Helena.",
+  "lang": "fr-CA",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "prefer_related_applications": false,
   "background_color": "#fff9ee",
   "theme_color": "#fff1c7",
   "icons": [
     {
-      "src": "/pwa-icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "src": "/helena-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/helena-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }
