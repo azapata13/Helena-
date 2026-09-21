@@ -10,22 +10,6 @@
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>Elena</title>
-    <script>
-      if (location.pathname === '/molina' || location.pathname.startsWith('/molina/')) {
-        document.title = 'Molina · Mes devoirs'
-        document.querySelector('meta[name="theme-color"]').content = '#76528b'
-        document.querySelector('meta[name="description"]').content = 'Les jeux et devoirs hebdomadaires de Molina.'
-        document.querySelector('meta[name="apple-mobile-web-app-title"]').content = 'Molina'
-        document.querySelector('link[rel="manifest"]').href = '/molina-manifest.webmanifest'
-        document.querySelector('link[rel="icon"]').setAttribute('href', '/molina-icon-192.png')
-        document.querySelector('link[rel="icon"]').setAttribute('type', 'image/png')
-        const appleIcon = document.createElement('link')
-        appleIcon.rel = 'apple-touch-icon'
-        appleIcon.sizes = '180x180'
-        appleIcon.href = '/molina-apple-touch-icon.png'
-        document.head.appendChild(appleIcon)
-      }
-    </script>
   </head>
   <body>
     <div id="root"></div>

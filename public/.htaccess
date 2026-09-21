@@ -1,5 +1,7 @@
 DirectoryIndex index.html index.php
 
+AddType application/manifest+json .webmanifest
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
@@ -9,6 +11,8 @@ DirectoryIndex index.html index.php
   RewriteCond %{REQUEST_FILENAME} -f [OR]
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteRule ^ - [L]
+
+  RewriteRule ^molina(?:/.*)?$ molina/index.html [L]
 
   RewriteRule ^ index.html [L]
 </IfModule>

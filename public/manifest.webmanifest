@@ -1,9 +1,11 @@
 {
+  "id": "/",
   "name": "Elena",
   "short_name": "Elena",
   "description": "L’app privée d’apprentissage hebdomadaire de Helena.",
   "start_url": "/",
   "display": "standalone",
+  "prefer_related_applications": false,
   "background_color": "#fff9ee",
   "theme_color": "#fff1c7",
   "icons": [
