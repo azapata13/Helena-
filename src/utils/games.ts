@@ -22,7 +22,7 @@ export function makeWordChoices(answer: string, allWords: string[], seed: string
 }
 
 export function makeNumberSequence(min: number, max: number, steps: number[], seed: string) {
-  const step = steps[Math.abs(seed.length + seed.charCodeAt(0)) % steps.length]
+  const step = steps[Math.abs(hashString(seed)) % steps.length]
   const startMin = step < 0 ? min - step * 3 : min
   const startMax = step > 0 ? max - step * 3 : max
   const start = startMin + (Math.abs(hashString(seed)) % Math.max(1, startMax - startMin + 1))
@@ -35,6 +35,17 @@ export function makeNumberSequence(min: number, max: number, steps: number[], se
     seed,
   )
   return { sequence, missingIndex, answer, choices, step }
+}
+
+export function makeNumberNeighbor(min: number, max: number, roundIndex: number, seed: string) {
+  const direction: 'avant' | 'après' = roundIndex % 2 === 0 ? 'avant' : 'après'
+  const available = Math.max(1, max - min - 1)
+  const target = min + 1 + (Math.abs(hashString(`${seed}-${roundIndex}`)) % available)
+  const answer = direction === 'avant' ? target - 1 : target + 1
+  const nearby = [answer - 2, answer - 1, answer + 1, answer + 2]
+    .filter((value, index, values) => value >= min && value <= max && value !== answer && values.indexOf(value) === index)
+  const choices = shuffle([answer, ...shuffle(nearby, `${seed}-${roundIndex}-nearby`).slice(0, 3)], `${seed}-${roundIndex}-choices`)
+  return { direction, target, answer, choices }
 }
 
 export function makeNumberChoices(answer: number, min: number, max: number, seed: string): number[] {

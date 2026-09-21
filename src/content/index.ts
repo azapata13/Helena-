@@ -7,14 +7,14 @@ export const weeks: WeekContent[] = [week20260907, week20260914, week20260921].s
   a.startDate.localeCompare(b.startDate),
 )
 
-export function getCurrentWeek(today = new Date()): WeekContent {
-  const markedCurrent = weeks.find((week) => week.status === 'current')
+export function getCurrentWeek(today = new Date(), availableWeeks = weeks): WeekContent {
+  const markedCurrent = availableWeeks.find((week) => week.status === 'current')
   if (markedCurrent) return markedCurrent
 
   const date = today.toISOString().slice(0, 10)
-  const active = weeks.find((week) => week.startDate <= date && week.endDate >= date)
+  const active = availableWeeks.find((week) => week.startDate <= date && week.endDate >= date)
   if (active) return active
 
-  const pastOrCurrent = weeks.filter((week) => week.startDate <= date)
-  return pastOrCurrent.at(-1) ?? weeks.at(-1)!
+  const pastOrCurrent = availableWeeks.filter((week) => week.startDate <= date)
+  return pastOrCurrent.at(-1) ?? availableWeeks.at(-1)!
 }

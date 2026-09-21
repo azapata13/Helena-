@@ -10,6 +10,8 @@ export type ActivityType =
   | 'nounSort'
   | 'numberSequence'
   | 'numberDictation'
+  | 'numberNeighbor'
+  | 'vowelSound'
   | 'reading'
   | 'wordPreview'
   | 'writing'
@@ -61,6 +63,23 @@ export type NumberDictationActivity = BaseActivity & {
   rounds?: number
 }
 
+export type NumberNeighborActivity = BaseActivity & {
+  type: 'numberNeighbor'
+  min: number
+  max: number
+  rounds?: number
+}
+
+export type VowelSoundActivity = BaseActivity & {
+  type: 'vowelSound'
+  items: Array<{
+    word: string
+    vowel: 'a' | 'e' | 'i' | 'o' | 'u' | 'y'
+    answer: boolean
+  }>
+  rounds?: number
+}
+
 export type ReadingActivity = BaseActivity & {
   type: 'reading'
   prompt: string
@@ -84,6 +103,8 @@ export type Activity =
   | NounSortActivity
   | NumberSequenceActivity
   | NumberDictationActivity
+  | NumberNeighborActivity
+  | VowelSoundActivity
   | ReadingActivity
   | WordPreviewActivity
   | WritingActivity
@@ -102,5 +123,6 @@ export type WeekContent = {
     grammar?: string
   }
   vocabulary?: string[]
+  reminders?: string[]
   activities: Activity[]
 }

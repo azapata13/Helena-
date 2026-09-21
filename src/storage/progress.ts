@@ -42,26 +42,32 @@ export type ProgressState = {
   weekMeta: Record<string, WeekProgressMeta>
 }
 
-const KEY = 'elena-progress-v1'
+const HELENA_KEY = 'elena-progress-v1'
 const emptyState: ProgressState = { weeks: {}, weekMeta: {} }
-let memoryState: ProgressState = emptyState
+const memoryStates: Record<string, ProgressState> = {}
 
-export function loadProgress(): ProgressState {
+function storageKey(namespace: string): string {
+  return namespace === 'helena' ? HELENA_KEY : `${namespace}-progress-v1`
+}
+
+export function loadProgress(namespace = 'helena'): ProgressState {
+  const key = storageKey(namespace)
   try {
-    const raw = window.localStorage.getItem(KEY)
-    if (!raw) return memoryState
+    const raw = window.localStorage.getItem(key)
+    if (!raw) return memoryStates[key] ?? emptyState
     const parsed = JSON.parse(raw) as ProgressState
-    memoryState = { weeks: parsed.weeks ?? {}, weekMeta: parsed.weekMeta ?? {} }
-    return memoryState
+    memoryStates[key] = { weeks: parsed.weeks ?? {}, weekMeta: parsed.weekMeta ?? {} }
+    return memoryStates[key]
   } catch {
-    return memoryState
+    return memoryStates[key] ?? emptyState
   }
 }
 
-export function saveProgress(state: ProgressState): void {
-  memoryState = state
+export function saveProgress(state: ProgressState, namespace = 'helena'): void {
+  const key = storageKey(namespace)
+  memoryStates[key] = state
   try {
-    window.localStorage.setItem(KEY, JSON.stringify(state))
+    window.localStorage.setItem(key, JSON.stringify(state))
   } catch {
     // Memory state keeps the app usable when browser storage is unavailable.
   }
@@ -228,12 +234,13 @@ export function mergeRemoteAttempts(state: ProgressState, weekId: string, attemp
   }
 }
 
-export function resetProgress(): ProgressState {
-  memoryState = emptyState
+export function resetProgress(namespace = 'helena'): ProgressState {
+  const key = storageKey(namespace)
+  memoryStates[key] = emptyState
   try {
-    window.localStorage.removeItem(KEY)
+    window.localStorage.removeItem(key)
   } catch {
     // Ignore storage reset failures.
   }
-  return memoryState
+  return memoryStates[key]
 }

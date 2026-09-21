@@ -177,7 +177,7 @@ export function NumberSequenceActivityView({ week, activity, mode, onBack, onAns
 
   return (
     <ActivityShell week={week} activity={activity} roundLabel={`${roundIndex + 1} / ${rounds}`} feedback={feedback} feedbackText={feedbackText} isComplete={isComplete} onBack={onBack} onNext={next}>
-      <h1 className="big-question">Compte par bonds de {puzzle.step}</h1>
+      <h1 className="big-question">{puzzle.step < 0 ? `Compte à l’envers de ${Math.abs(puzzle.step)}` : `Compte par bonds de ${puzzle.step}`}</h1>
       <div className="number-sequence">
         {puzzle.sequence.map((value, index) => <span key={`${value}-${index}`}>{index === puzzle.missingIndex ? '?' : value}</span>)}
       </div>

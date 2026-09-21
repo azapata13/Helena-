@@ -16,13 +16,13 @@ import {
   type ProgressState,
 } from '../storage/progress'
 
-export function useProgress() {
-  const [progress, setProgress] = useState<ProgressState>(() => loadProgress())
+export function useProgress(namespace = 'helena') {
+  const [progress, setProgress] = useState<ProgressState>(() => loadProgress(namespace))
 
   function updateProgress(makeNext: (current: ProgressState) => ProgressState) {
     setProgress((current) => {
       const next = makeNext(current)
-      saveProgress(next)
+      saveProgress(next, namespace)
       return next
     })
   }
@@ -46,7 +46,7 @@ export function useProgress() {
   function completeWeek(weekId: string, mode: 'guided' | 'test') {
     setProgress((current) => {
       const result = completeWeekAttempt(current, weekId, mode)
-      saveProgress(result.state)
+      saveProgress(result.state, namespace)
       void saveRemoteWeekAttempt(weekId, result.attempt, result.answers)
       return result.state
     })
@@ -57,14 +57,14 @@ export function useProgress() {
       if (attempts.length === 0) return
       setProgress((current) => {
         const next = mergeRemoteAttempts(current, weekId, attempts)
-        saveProgress(next)
+        saveProgress(next, namespace)
         return next
       })
     })
-  }, [])
+  }, [namespace])
 
   function resetAll() {
-    setProgress(resetProgress())
+    setProgress(resetProgress(namespace))
   }
 
   return { progress, startTestAttempt, recordAnswer, completeActivity, completeWeek, syncWeek, resetAll }

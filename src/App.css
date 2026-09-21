@@ -13,6 +13,18 @@
 .hero-panel, .simple-page, .activity-stage { background: rgba(255,255,255,.84); border: 1px solid rgba(41,50,65,.08); border-radius: 28px; box-shadow: 0 24px 70px rgba(56,41,20,.12); }
 .hero-panel { width: 100%; max-width: 100%; min-height: 640px; padding: clamp(28px,5vw,64px); display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
 .hero-panel::after { content: ''; position: absolute; right: -64px; bottom: -80px; width: 280px; height: 280px; border-radius: 42% 58% 52% 48%; background: #ffd66b; opacity: .38; }
+.student-molina {
+  background:
+    radial-gradient(circle at 12% 10%, rgba(250, 171, 205, .32), transparent 24rem),
+    radial-gradient(circle at 92% 18%, rgba(124, 191, 235, .28), transparent 22rem),
+    #fff8f5;
+}
+.student-molina .hero-panel::after { background: #f7b3cf; }
+.student-molina .primary-button { background: #76528b; box-shadow: 0 14px 24px rgba(118,82,139,.22); }
+.student-molina .bottom-nav button.active { background: #f9d7e5; color: #563564; }
+.student-molina .activity-icon { background: #f9d7e5; color: #694279; }
+.student-molina .progress-orb { background: conic-gradient(#8a67a0 var(--progress), #f0e4e9 0); }
+.student-molina .activity-tile b, .student-molina .week-card b { color: #76528b; }
 .hello-row { display: flex; justify-content: space-between; gap: 24px; align-items: start; position: relative; z-index: 1; }
 .hello-row > div { min-width: 0; }
 .hero-heading { display: grid; justify-items: start; gap: 10px; }
@@ -20,6 +32,9 @@
 .hero-panel h1 { color: #253044; font-size: clamp(1.45rem,3vw,2.6rem); line-height: 1.06; margin: 0; max-width: 620px; overflow-wrap: anywhere; }
 .simple-page h1 { color: #253044; font-size: clamp(2.25rem,5vw,4.7rem); line-height: .98; margin: 10px 0 0; max-width: 780px; overflow-wrap: anywhere; }
 .week-note { max-width: 680px; font-size: clamp(1.22rem,2.4vw,1.85rem); line-height: 1.35; color: #4d5870; position: relative; z-index: 1; overflow-wrap: anywhere; word-break: break-word; }
+.family-reminders { position: relative; z-index: 1; max-width: 680px; padding: 18px 20px; border-radius: 20px; background: rgba(255,255,255,.72); color: #4d5870; }
+.family-reminders strong { display: block; color: #253044; font-size: 1.05rem; }
+.family-reminders ul { margin: 8px 0 0; padding-left: 22px; line-height: 1.45; }
 .progress-orb { width: 142px; aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center; flex: 0 0 auto; background: conic-gradient(#50b8a4 var(--progress), #f0e4cf 0); position: relative; color: #253044; }
 .progress-orb::before { content: ''; position: absolute; inset: 12px; border-radius: inherit; background: #fffaf0; }
 .progress-orb strong, .progress-orb span { position: relative; z-index: 1; }
@@ -59,6 +74,7 @@ button:focus-visible { outline: 4px solid rgba(40,129,255,.46); outline-offset: 
 .audio-button { display: inline-flex; align-items: center; gap: 10px; background: #dff4ee; color: #255e55; }
 .big-question { color: #253044; font-size: clamp(2rem,5vw,4.3rem); line-height: 1.04; margin: 0; max-width: 820px; }
 .word-display, .spotlight-word { font-size: clamp(3.1rem,8vw,6.6rem); line-height: 1; font-weight: 950; color: #253044; }
+.number-focus { min-width: 150px; min-height: 150px; margin: 0; border-radius: 42px; display: grid; place-items: center; background: #eaf8f3; color: #253044; font-size: clamp(4rem,10vw,7rem); line-height: 1; font-weight: 950; }
 .choice-grid { width: min(760px,100%); display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; }
 .choice-grid.letter-grid { grid-template-columns: repeat(4,minmax(72px,1fr)); }
 .choice-grid.two { grid-template-columns: repeat(2,1fr); }

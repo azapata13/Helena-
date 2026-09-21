@@ -1,14 +1,40 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 import { ActivityRenderer } from './activities/ActivityRenderer'
 import { ProgressRing } from './components/ProgressRing'
 import { getCurrentWeek, weeks } from './content'
+import { molinaWeeks } from './content/molina'
 import { useProgress, useSyncWeekProgress, useWeekProgress } from './hooks/useProgress'
 import type { ActivityAnswer } from './storage/progress'
 import type { Activity, Subject, WeekContent } from './types/content'
 import { formatScore } from './utils/grades'
 
 type View = 'home' | 'weeks' | 'stars' | 'activity'
+
+type StudentProfile = {
+  id: 'helena' | 'molina'
+  name: string
+  weeks: WeekContent[]
+  readyMessage: string
+}
+
+const helenaProfile: StudentProfile = {
+  id: 'helena',
+  name: 'Helena',
+  weeks,
+  readyMessage: 'Prête pour une belle semaine ?',
+}
+
+const molinaProfile: StudentProfile = {
+  id: 'molina',
+  name: 'Molina',
+  weeks: molinaWeeks,
+  readyMessage: 'Prête à apprendre en jouant ?',
+}
+
+function profileForPath(pathname: string): StudentProfile {
+  return pathname === '/molina' || pathname.startsWith('/molina/') ? molinaProfile : helenaProfile
+}
 
 const subjectLabels: Record<Subject, string> = {
   lecture: 'Lecture',
@@ -19,16 +45,21 @@ const subjectLabels: Record<Subject, string> = {
 }
 
 function App() {
-  const defaultWeek = useMemo(() => getCurrentWeek(), [])
+  const profile = useMemo(() => profileForPath(window.location.pathname), [])
+  const defaultWeek = useMemo(() => getCurrentWeek(new Date(), profile.weeks), [profile])
   const [selectedWeekId, setSelectedWeekId] = useState(defaultWeek.id)
   const [view, setView] = useState<View>('home')
   const [activeActivityId, setActiveActivityId] = useState<string | null>(null)
   const [pendingScore, setPendingScore] = useState<{ correct: number; total: number; nextActivity: Activity } | null>(null)
-  const { progress, startTestAttempt, recordAnswer, completeActivity, completeWeek, syncWeek, resetAll } = useProgress()
-  const selectedWeek = weeks.find((week) => week.id === selectedWeekId) ?? defaultWeek
+  const { progress, startTestAttempt, recordAnswer, completeActivity, completeWeek, syncWeek, resetAll } = useProgress(profile.id)
+  const selectedWeek = profile.weeks.find((week) => week.id === selectedWeekId) ?? defaultWeek
   const weekProgress = useWeekProgress(selectedWeek, progress)
   const currentActivity = selectedWeek.activities.find((activity) => activity.id === activeActivityId)
   useSyncWeekProgress(selectedWeek.id, syncWeek)
+
+  useEffect(() => {
+    document.title = `${profile.name} · Mes devoirs`
+  }, [profile.name])
 
   function startActivity(activity: Activity) {
     setPendingScore(null)
@@ -91,7 +122,7 @@ function App() {
   }
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell student-${profile.id}`}>
       <main className="main-surface">
         {view === 'home' ? (
           pendingScore ? (
@@ -99,15 +130,17 @@ function App() {
               correct={pendingScore.correct}
               total={pendingScore.total}
               nextActivity={pendingScore.nextActivity}
+              studentName={profile.name}
               onNext={() => startActivity(pendingScore.nextActivity)}
             />
           ) : (
-            <HomeView week={selectedWeek} progress={weekProgress} onContinue={continueWeek} onStart={startActivity} />
+            <HomeView profile={profile} week={selectedWeek} progress={weekProgress} onContinue={continueWeek} onStart={startActivity} />
           )
         ) : null}
         {view === 'weeks' ? (
           <WeeksView
             progress={progress}
+            weeks={profile.weeks}
             selectedWeekId={selectedWeekId}
             onSelect={(week) => {
               setSelectedWeekId(week.id)
@@ -115,7 +148,7 @@ function App() {
             }}
           />
         ) : null}
-        {view === 'stars' ? <StarsView weeks={weeks} progress={progress} onReset={resetAll} /> : null}
+        {view === 'stars' ? <StarsView weeks={profile.weeks} progress={progress} onReset={resetAll} /> : null}
       </main>
       <nav className="bottom-nav" aria-label="Navigation principale">
         <button className={view === 'home' ? 'active' : ''} type="button" onClick={() => setView('home')}>
@@ -136,11 +169,13 @@ function ScoreCompleteView({
   correct,
   total,
   nextActivity,
+  studentName,
   onNext,
 }: {
   correct: number
   total: number
   nextActivity: Activity
+  studentName: string
   onNext: () => void
 }) {
   const [grade, score] = formatScore(correct, total).split(' · ')
@@ -149,7 +184,7 @@ function ScoreCompleteView({
     <section className="score-complete-page" role="status">
       <div className="score-complete-card">
         <p className="eyebrow">Test terminé</p>
-        <h1>Bravo Helena !</h1>
+        <h1>Bravo {studentName} !</h1>
         <p className="score-complete-note">Tu as terminé tous les exercices notés.</p>
         <div className="grade-medal" aria-label={`Note globale ${formatScore(correct, total)}`}>
           {grade}
@@ -165,11 +200,13 @@ function ScoreCompleteView({
 }
 
 function HomeView({
+  profile,
   week,
   progress,
   onContinue,
   onStart,
 }: {
+  profile: StudentProfile
   week: WeekContent
   progress: ReturnType<typeof useWeekProgress>
   onContinue: () => void
@@ -180,7 +217,7 @@ function HomeView({
       <div className="hero-panel">
         <div className="hello-row">
           <div className="hero-heading">
-            <p className="eyebrow">Bonjour Helena</p>
+            <p className="eyebrow">Bonjour {profile.name}</p>
             <button className="primary-button hero-action" type="button" onClick={onContinue}>
               {progress.mode === 'test' ? 'Refaire' : progress.completedCount > 0 ? 'Continuer' : 'Commencer'}
             </button>
@@ -191,16 +228,22 @@ function HomeView({
         {progress.isComplete ? (
           <div className="celebration" role="status">
             <div className="sparkles" aria-hidden="true">★ ★ ★</div>
-            <h2>Bravo Helena !</h2>
+            <h2>Bravo {profile.name} !</h2>
             <p>Tu as terminé ta semaine.</p>
           </div>
         ) : (
           <p className="week-note">
             {progress.mode === 'test'
               ? scoreLabel(progress)
-              : week.summary.vocabulary ?? 'Prête pour une belle semaine ?'}
+              : week.summary.vocabulary ?? profile.readyMessage}
           </p>
         )}
+        {week.reminders?.length ? (
+          <aside className="family-reminders">
+            <strong>À retenir pour la famille</strong>
+            <ul>{week.reminders.map((reminder) => <li key={reminder}>{reminder}</li>)}</ul>
+          </aside>
+        ) : null}
       </div>
       <div className="activity-list" aria-label="Activités de la semaine">
         {week.activities.map((activity) => {
@@ -222,10 +265,12 @@ function HomeView({
 }
 
 function WeeksView({
+  weeks: allWeeks,
   progress,
   selectedWeekId,
   onSelect,
 }: {
+  weeks: WeekContent[]
   progress: ReturnType<typeof useProgress>['progress']
   selectedWeekId: string
   onSelect: (week: WeekContent) => void
@@ -234,7 +279,7 @@ function WeeksView({
     <section className="simple-page">
       <h1>Mes semaines</h1>
       <div className="week-list">
-        {[...weeks].reverse().map((week) => {
+        {[...allWeeks].reverse().map((week) => {
           const records = progress.weeks[week.id] ?? {}
           const completions = progress.weekMeta[week.id]?.completionCount ?? 0
           const completed = week.activities.filter((activity) => records[activity.id]?.completed).length
