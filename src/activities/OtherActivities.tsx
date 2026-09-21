@@ -142,8 +142,11 @@ export function NumberSequenceActivityView({ week, activity, mode, onBack, onAns
   const [feedback, setFeedback] = useState<'success' | 'try' | ''>('')
   const [feedbackText, setFeedbackText] = useState('')
   const [correctAnswers, setCorrectAnswers] = useState(0)
-  const rounds = activity.rounds ?? 5
-  const puzzle = makeNumberSequence(activity.min, activity.max, activity.steps, `${week.id}-${activity.id}-${roundIndex}`)
+  const firstGradeRounds = activity.rounds ?? 5
+  const rounds = firstGradeRounds + (activity.challenge ? 1 : 0)
+  const isChallenge = Boolean(activity.challenge) && roundIndex === rounds - 1
+  const range = isChallenge && activity.challenge ? activity.challenge : activity
+  const puzzle = makeNumberSequence(range.min, range.max, range.steps, `${week.id}-${activity.id}-${roundIndex}`)
 
   const isComplete = mode === 'test' ? feedback !== '' : feedback === 'success'
 
@@ -177,6 +180,7 @@ export function NumberSequenceActivityView({ week, activity, mode, onBack, onAns
 
   return (
     <ActivityShell week={week} activity={activity} roundLabel={`${roundIndex + 1} / ${rounds}`} feedback={feedback} feedbackText={feedbackText} isComplete={isComplete} onBack={onBack} onNext={next}>
+      {isChallenge ? <p className="challenge-pill">Défi de 2e année</p> : null}
       <h1 className="big-question">{puzzle.step < 0 ? `Compte à l’envers de ${Math.abs(puzzle.step)}` : `Compte par bonds de ${puzzle.step}`}</h1>
       <div className="number-sequence">
         {puzzle.sequence.map((value, index) => <span key={`${value}-${index}`}>{index === puzzle.missingIndex ? '?' : value}</span>)}

@@ -16,15 +16,16 @@ type CommonProps<T extends Activity> = {
 }
 
 export function VowelSoundActivityView({ week, activity, mode, onBack, onAnswer, onComplete }: CommonProps<VowelSoundActivity>) {
-  const items = useMemo(
-    () => pickRoundItems(activity.items, activity.rounds ?? activity.items.length, `${week.id}-${activity.id}`),
-    [activity, week.id],
-  )
+  const items = useMemo(() => {
+    const firstGradeItems = pickRoundItems(activity.items, activity.rounds ?? activity.items.length, `${week.id}-${activity.id}`)
+    return activity.challengeItem ? [...firstGradeItems, activity.challengeItem] : firstGradeItems
+  }, [activity, week.id])
   const [roundIndex, setRoundIndex] = useState(0)
   const [feedback, setFeedback] = useState<'success' | 'try' | ''>('')
   const [feedbackText, setFeedbackText] = useState('')
   const [correctAnswers, setCorrectAnswers] = useState(0)
   const item = items[roundIndex]
+  const isChallenge = Boolean(activity.challengeItem) && roundIndex === items.length - 1
   const isComplete = mode === 'test' ? feedback !== '' : feedback === 'success'
 
   function choose(answer: boolean) {
@@ -57,6 +58,7 @@ export function VowelSoundActivityView({ week, activity, mode, onBack, onAnswer,
 
   return (
     <ActivityShell week={week} activity={activity} roundLabel={`${roundIndex + 1} / ${items.length}`} feedback={feedback} feedbackText={feedbackText} isComplete={isComplete} onBack={onBack} onNext={next}>
+      {isChallenge ? <p className="challenge-pill">Défi de 2e année</p> : null}
       <AudioButton text={item.word} label="Écoute le mot" />
       <h1 className="big-question">Entends-tu le son « {item.vowel} » dans « {item.word} » ?</h1>
       <div className="choice-grid two">
@@ -68,12 +70,15 @@ export function VowelSoundActivityView({ week, activity, mode, onBack, onAnswer,
 }
 
 export function NumberNeighborActivityView({ week, activity, mode, onBack, onAnswer, onComplete }: CommonProps<NumberNeighborActivity>) {
-  const rounds = activity.rounds ?? 6
+  const firstGradeRounds = activity.rounds ?? 6
+  const rounds = firstGradeRounds + (activity.challenge ? 1 : 0)
   const [roundIndex, setRoundIndex] = useState(0)
   const [feedback, setFeedback] = useState<'success' | 'try' | ''>('')
   const [feedbackText, setFeedbackText] = useState('')
   const [correctAnswers, setCorrectAnswers] = useState(0)
-  const { direction, target, answer, choices } = makeNumberNeighbor(activity.min, activity.max, roundIndex, `${week.id}-${activity.id}`)
+  const isChallenge = Boolean(activity.challenge) && roundIndex === rounds - 1
+  const range = isChallenge && activity.challenge ? activity.challenge : activity
+  const { direction, target, answer, choices } = makeNumberNeighbor(range.min, range.max, roundIndex, `${week.id}-${activity.id}`)
   const isComplete = mode === 'test' ? feedback !== '' : feedback === 'success'
 
   function choose(choice: number) {
@@ -106,6 +111,7 @@ export function NumberNeighborActivityView({ week, activity, mode, onBack, onAns
 
   return (
     <ActivityShell week={week} activity={activity} roundLabel={`${roundIndex + 1} / ${rounds}`} feedback={feedback} feedbackText={feedbackText} isComplete={isComplete} onBack={onBack} onNext={next}>
+      {isChallenge ? <p className="challenge-pill">Défi de 2e année</p> : null}
       <p className="number-focus" aria-label={`Nombre ${target}`}>{target}</p>
       <h1 className="big-question">Quel nombre vient {direction} {target} ?</h1>
       <div className="choice-grid">

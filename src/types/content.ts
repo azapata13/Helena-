@@ -53,6 +53,11 @@ export type NumberSequenceActivity = BaseActivity & {
   max: number
   steps: number[]
   rounds?: number
+  challenge?: {
+    min: number
+    max: number
+    steps: number[]
+  }
 }
 
 export type NumberDictationActivity = BaseActivity & {
@@ -68,6 +73,10 @@ export type NumberNeighborActivity = BaseActivity & {
   min: number
   max: number
   rounds?: number
+  challenge?: {
+    min: number
+    max: number
+  }
 }
 
 export type VowelSoundActivity = BaseActivity & {
@@ -78,6 +87,11 @@ export type VowelSoundActivity = BaseActivity & {
     answer: boolean
   }>
   rounds?: number
+  challengeItem?: {
+    word: string
+    vowel: 'a' | 'e' | 'i' | 'o' | 'u' | 'y'
+    answer: boolean
+  }
 }
 
 export type ReadingActivity = BaseActivity & {

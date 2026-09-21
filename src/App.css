@@ -29,6 +29,7 @@
 .hello-row > div { min-width: 0; }
 .hero-heading { display: grid; justify-items: start; gap: 10px; }
 .eyebrow, .activity-kind, .soft-label { color: #5b7f78; font-size: .92rem; font-weight: 900; letter-spacing: 0; text-transform: uppercase; }
+.challenge-pill { width: fit-content; margin: 0 auto 6px; padding: 8px 14px; border-radius: 999px; background: #fff1c7; color: #7a4b00; font-size: .9rem; font-weight: 950; }
 .hero-panel h1 { color: #253044; font-size: clamp(1.45rem,3vw,2.6rem); line-height: 1.06; margin: 0; max-width: 620px; overflow-wrap: anywhere; }
 .simple-page h1 { color: #253044; font-size: clamp(2.25rem,5vw,4.7rem); line-height: .98; margin: 10px 0 0; max-width: 780px; overflow-wrap: anywhere; }
 .week-note { max-width: 680px; font-size: clamp(1.22rem,2.4vw,1.85rem); line-height: 1.35; color: #4d5870; position: relative; z-index: 1; overflow-wrap: anywhere; word-break: break-word; }

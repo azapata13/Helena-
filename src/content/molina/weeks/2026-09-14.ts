@@ -54,6 +54,7 @@ export const molinaWeek20260914: WeekContent = {
         { word: 'maman', vowel: 'y', answer: false },
       ],
       rounds: 8,
+      challengeItem: { word: 'bibliothèque', vowel: 'i', answer: true },
       stars: 3,
     },
     {
@@ -66,6 +67,7 @@ export const molinaWeek20260914: WeekContent = {
       max: 20,
       steps: [1, -1],
       rounds: 6,
+      challenge: { min: 0, max: 100, steps: [1, -1] },
       stars: 3,
     },
     {
@@ -77,6 +79,7 @@ export const molinaWeek20260914: WeekContent = {
       min: 0,
       max: 20,
       rounds: 8,
+      challenge: { min: 0, max: 100 },
       stars: 3,
     },
     {
