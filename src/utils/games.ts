@@ -48,6 +48,12 @@ export function makeNumberNeighbor(min: number, max: number, roundIndex: number,
   return { direction, target, answer, choices }
 }
 
+export function makeNumberParity(min: number, max: number, roundIndex: number, seed: string) {
+  const available = Math.max(1, max - min + 1)
+  const value = min + (Math.abs(hashString(`${seed}-${roundIndex}`)) % available)
+  return { value, answer: value % 2 === 0 ? 'pair' as const : 'impair' as const }
+}
+
 export function makeNumberChoices(answer: number, min: number, max: number, seed: string): number[] {
   const offsets = [-10, -5, -2, 2, 5, 10]
   const pool = offsets.map((offset) => answer + offset).filter((value) => value >= min && value <= max && value !== answer)

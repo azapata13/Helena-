@@ -10,7 +10,7 @@ import {
   WordPreviewActivityView,
   WritingActivityView,
 } from './OtherActivities'
-import { NumberNeighborActivityView, VowelSoundActivityView } from './LearningActivities'
+import { NumberNeighborActivityView, NumberParityActivityView, VowelSoundActivityView } from './LearningActivities'
 
 type Props = {
   week: WeekContent
@@ -40,6 +40,8 @@ export function ActivityRenderer(props: Props) {
       return <NumberDictationActivityView {...props} activity={activity} />
     case 'numberNeighbor':
       return <NumberNeighborActivityView {...props} activity={activity} />
+    case 'numberParity':
+      return <NumberParityActivityView {...props} activity={activity} />
     case 'vowelSound':
       return <VowelSoundActivityView {...props} activity={activity} />
     case 'reading':

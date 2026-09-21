@@ -11,6 +11,7 @@ export type ActivityType =
   | 'numberSequence'
   | 'numberDictation'
   | 'numberNeighbor'
+  | 'numberParity'
   | 'vowelSound'
   | 'reading'
   | 'wordPreview'
@@ -79,6 +80,17 @@ export type NumberNeighborActivity = BaseActivity & {
   }
 }
 
+export type NumberParityActivity = BaseActivity & {
+  type: 'numberParity'
+  min: number
+  max: number
+  rounds?: number
+  challenge?: {
+    min: number
+    max: number
+  }
+}
+
 export type VowelSoundActivity = BaseActivity & {
   type: 'vowelSound'
   items: Array<{
@@ -118,6 +130,7 @@ export type Activity =
   | NumberSequenceActivity
   | NumberDictationActivity
   | NumberNeighborActivity
+  | NumberParityActivity
   | VowelSoundActivity
   | ReadingActivity
   | WordPreviewActivity
