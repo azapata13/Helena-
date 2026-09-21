@@ -1,0 +1,27 @@
+{
+  "id": "/molina",
+  "name": "Molina - Mes devoirs",
+  "short_name": "Molina",
+  "description": "Les jeux et devoirs hebdomadaires de Molina.",
+  "lang": "fr-CA",
+  "start_url": "/molina",
+  "scope": "/molina",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#fff8f5",
+  "theme_color": "#76528b",
+  "icons": [
+    {
+      "src": "/molina-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/molina-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
