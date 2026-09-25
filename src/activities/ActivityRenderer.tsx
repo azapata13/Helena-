@@ -11,6 +11,7 @@ import {
   WritingActivityView,
 } from './OtherActivities'
 import { NumberNeighborActivityView, NumberParityActivityView, VowelSoundActivityView } from './LearningActivities'
+import { ChoiceQuizActivityView } from './ChoiceQuizActivity'
 
 type Props = {
   week: WeekContent
@@ -44,6 +45,8 @@ export function ActivityRenderer(props: Props) {
       return <NumberParityActivityView {...props} activity={activity} />
     case 'vowelSound':
       return <VowelSoundActivityView {...props} activity={activity} />
+    case 'choiceQuiz':
+      return <ChoiceQuizActivityView {...props} activity={activity} />
     case 'reading':
       return <ReadingActivityView {...props} activity={activity} />
     case 'wordPreview':

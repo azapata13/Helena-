@@ -13,6 +13,7 @@ export type ActivityType =
   | 'numberNeighbor'
   | 'numberParity'
   | 'vowelSound'
+  | 'choiceQuiz'
   | 'reading'
   | 'wordPreview'
   | 'writing'
@@ -106,6 +107,16 @@ export type VowelSoundActivity = BaseActivity & {
   }
 }
 
+export type ChoiceQuizActivity = BaseActivity & {
+  type: 'choiceQuiz'
+  items: Array<{
+    question: string
+    choices: string[]
+    answer: string
+    hint: string
+  }>
+}
+
 export type ReadingActivity = BaseActivity & {
   type: 'reading'
   prompt: string
@@ -132,6 +143,7 @@ export type Activity =
   | NumberNeighborActivity
   | NumberParityActivity
   | VowelSoundActivity
+  | ChoiceQuizActivity
   | ReadingActivity
   | WordPreviewActivity
   | WritingActivity

@@ -5,7 +5,7 @@ export const week20260921: WeekContent = {
   title: 'Semaine du 21 au 25 septembre',
   startDate: '2026-09-21',
   endDate: '2026-09-25',
-  status: 'current',
+  status: 'past',
   summary: {
     reading: 'Lire de petits livres à la maison ou à la bibliothèque; rapporter les emprunts tous les jeudis.',
     vocabulary: 'Bloc 1, semaine 4 : 12 mots. Le son final « t » s’écrit souvent « te »; sept et huit sont hors-la-loi, zéro est l’intrus.',

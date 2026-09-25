@@ -2,8 +2,9 @@ import type { WeekContent } from '../types/content'
 import { week20260907 } from './weeks/2026-09-07'
 import { week20260914 } from './weeks/2026-09-14'
 import { week20260921 } from './weeks/2026-09-21'
+import { week20260928 } from './weeks/2026-09-28'
 
-export const weeks: WeekContent[] = [week20260907, week20260914, week20260921].sort((a, b) =>
+export const weeks: WeekContent[] = [week20260907, week20260914, week20260921, week20260928].sort((a, b) =>
   a.startDate.localeCompare(b.startDate),
 )
 
