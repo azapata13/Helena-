@@ -53,7 +53,7 @@ button:focus-visible { outline: 4px solid rgba(40,129,255,.46); outline-offset: 
 .activity-tile strong, .week-card strong { display: block; font-size: 1.1rem; }
 .activity-tile small, .week-card small { display: block; color: #69748b; font-weight: 750; }
 .activity-tile b, .week-card b { font-size: 1.6rem; color: #2f6f64; }
-.bottom-nav { position: fixed; z-index: 10; left: 50%; bottom: 18px; transform: translateX(-50%); width: min(760px,calc(100% - 28px)); max-width: calc(100vw - 28px); display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; padding: 8px; border-radius: 999px; background: rgba(255,255,255,.9); box-shadow: 0 14px 42px rgba(43,35,21,.18); backdrop-filter: blur(16px); overflow: hidden; }
+.bottom-nav { position: fixed; z-index: 10; left: 50%; bottom: 18px; transform: translateX(-50%); width: min(820px,calc(100% - 28px)); max-width: calc(100vw - 28px); display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 8px; padding: 8px; border-radius: 999px; background: rgba(255,255,255,.9); box-shadow: 0 14px 42px rgba(43,35,21,.18); backdrop-filter: blur(16px); overflow: hidden; }
 .bottom-nav button { min-width: 0; border-radius: 999px; background: transparent; color: #536079; font-weight: 950; padding: 12px 8px; overflow-wrap: anywhere; }
 .bottom-nav button.active { background: #ffe7aa; color: #463412; }
 .simple-page { min-height: 620px; padding: clamp(28px,5vw,56px); }

@@ -36,6 +36,12 @@ function profileForPath(pathname: string): StudentProfile {
   return pathname === '/molina' || pathname.startsWith('/molina/') ? molinaProfile : helenaProfile
 }
 
+function refreshApp() {
+  const url = new URL(window.location.href)
+  url.searchParams.set('actualiser', Date.now().toString())
+  window.location.replace(url.toString())
+}
+
 const subjectLabels: Record<Subject, string> = {
   lecture: 'Lecture',
   mots: 'Mots',
@@ -159,6 +165,9 @@ function App() {
         </button>
         <button className={view === 'stars' ? 'active' : ''} type="button" onClick={() => setView('stars')}>
           Mes étoiles
+        </button>
+        <button type="button" onClick={refreshApp} aria-label="Actualiser l’application">
+          ↻ Actualiser
         </button>
       </nav>
     </div>
