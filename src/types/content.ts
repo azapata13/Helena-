@@ -109,6 +109,7 @@ export type VowelSoundActivity = BaseActivity & {
 
 export type ChoiceQuizActivity = BaseActivity & {
   type: 'choiceQuiz'
+  audioPrompt?: boolean
   items: Array<{
     question: string
     choices: string[]

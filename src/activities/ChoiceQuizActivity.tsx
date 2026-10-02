@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { AudioButton } from '../components/AudioButton'
 import type { ActivityAnswer } from '../storage/progress'
 import type { ChoiceQuizActivity, WeekContent } from '../types/content'
 import { shuffle } from '../utils/random'
@@ -64,6 +65,7 @@ export function ChoiceQuizActivityView({ week, activity, mode, onBack, onAnswer,
       onBack={onBack}
       onNext={next}
     >
+      {activity.audioPrompt ? <AudioButton text={item.question} label="Écoute la question" /> : null}
       <h1 className="big-question">{item.question}</h1>
       <div className="choice-grid">
         {choices.map((choice) => (
