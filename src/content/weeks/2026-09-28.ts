@@ -5,7 +5,7 @@ export const week20260928: WeekContent = {
   title: 'Semaine du 28 septembre au 2 octobre',
   startDate: '2026-09-28',
   endDate: '2026-10-02',
-  status: 'current',
+  status: 'past',
   summary: {
     reading: 'Lire de petits livres à la maison ou à la bibliothèque; rapporter les emprunts tous les jeudis.',
     vocabulary: 'Bloc 1, document supplémentaire dans le cartable; écrire les mots plusieurs fois. Verbes être, avoir et aimer au présent.',
