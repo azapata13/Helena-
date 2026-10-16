@@ -31,7 +31,13 @@ jobs:
         run: npm ci
 
       - name: Build production app
-        run: npm run build
+        env:
+          VITE_APP_VERSION: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          npm run lint
+          npm run build
+          printf '{"version":"%s"}\n' "$VITE_APP_VERSION" > dist/version.json
 
       - name: Prepare SSH key
         env:
