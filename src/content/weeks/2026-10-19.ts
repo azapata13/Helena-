@@ -22,6 +22,7 @@ export const week20261019: WeekContent = {
   reminders: [
     'Rapporter les livres de bibliothèque tous les jeudis.',
     'Netmath : code de classe PIPUTO.',
+    'ALEC Éducation : activités proposées par Sylvie sur fr.alec-edu.com, code de classe yf78 (disponibles environ 3 semaines).',
     'Mathématique : aide-mémoire de Nougat, page 37.',
     'Français : aide-mémoire de Majesté, page 12.',
   ],
@@ -144,6 +145,15 @@ export const week20261019: WeekContent = {
       title: 'Les quatre signes à découvrir',
       prompt: 'Ouvre la page 12 de l’aide-mémoire de Majesté. Explique ce qu’est un tréma, une cédille, une apostrophe et un trait d’union. Dis quand on les utilise et trouve des exemples.',
       stars: 2,
+    },
+    {
+      id: 'alec-education',
+      type: 'reading',
+      subject: 'lecture',
+      title: 'Mes jeux ALEC',
+      prompt: 'Va sur https://fr.alec-edu.com/ avec le code de classe yf78. Sylvie y a choisi des activités pour toi, disponibles environ trois semaines.',
+      required: false,
+      stars: 1,
     },
     {
       id: 'netmath',
