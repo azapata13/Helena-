@@ -12,7 +12,7 @@ export const week20261005: WeekContent = {
   title: 'Semaine du 5 au 9 octobre',
   startDate: '2026-10-05',
   endDate: '2026-10-09',
-  status: 'current',
+  status: 'past',
   summary: {
     reading: 'Lire de petits livres à la maison ou à la bibliothèque; rapporter les emprunts tous les jeudis.',
     vocabulary: 'Révision du bloc 1 en jeux : cette semaine, de « canard » à « vite ».',
