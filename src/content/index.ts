@@ -5,10 +5,17 @@ import { week20260921 } from './weeks/2026-09-21'
 import { week20260928 } from './weeks/2026-09-28'
 import { week20261005 } from './weeks/2026-10-05'
 import { week20261019 } from './weeks/2026-10-19'
+import { week20261026 } from './weeks/2026-10-26'
 
-export const weeks: WeekContent[] = [week20260907, week20260914, week20260921, week20260928, week20261005, week20261019].sort(
-  (a, b) => a.startDate.localeCompare(b.startDate),
-)
+export const weeks: WeekContent[] = [
+  week20260907,
+  week20260914,
+  week20260921,
+  week20260928,
+  week20261005,
+  week20261019,
+  week20261026,
+].sort((a, b) => a.startDate.localeCompare(b.startDate))
 
 export function getCurrentWeek(today = new Date(), availableWeeks = weeks): WeekContent {
   const markedCurrent = availableWeeks.find((week) => week.status === 'current')

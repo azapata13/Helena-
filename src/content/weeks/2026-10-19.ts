@@ -10,7 +10,7 @@ export const week20261019: WeekContent = {
   title: 'Semaine du 19 au 23 octobre',
   startDate: '2026-10-19',
   endDate: '2026-10-23',
-  status: 'current',
+  status: 'past',
   summary: {
     reading: 'Lire de petits livres à la maison ou à la bibliothèque; rapporter les emprunts tous les jeudis.',
     vocabulary: 'Bloc 2, semaine 1 : apprendre les mots avec la règle de la bonne clé et du balai magique.',
